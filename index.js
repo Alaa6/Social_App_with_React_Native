@@ -1,28 +1,25 @@
-
 import React ,{Component} from 'react';
 import {Navigation} from 'react-native-navigation'
 import App from './App'
-//import registerScreens from './src/Screens'
-//import {Provider} from 'react-redux';
-//import store from './src/store';
-//import SideMenu from './src/Components/SideMenu'
+import {Provider} from 'react-redux';
+import store from './src/store';
+import SideMenu from './src/Components/SideMenu'
 
 console.disableYellowBox = true;
 
 
-Navigation.registerComponent('App',() => App);
 
-// Navigation.registerComponent('App',() => (props) => (
-//   <Provider store={store}>
-//     <App {...props} />
-//   </Provider>
-// ), () => App);
+Navigation.registerComponent('App',() => (props) => (
+  <Provider store={store}>
+    <App {...props} />
+  </Provider>
+), () => App);
 
-// Navigation.registerComponent('SideMenu',() => (props) => (
-//   <Provider store={store}>
-//     <SideMenu {...props} />
-//   </Provider>
-// ), () => SideMenu);
+Navigation.registerComponent('SideMenu',() => (props) => (
+  <Provider store={store}>
+    <SideMenu {...props} />
+  </Provider>
+), () => SideMenu);
 
 
 Navigation.events().registerAppLaunchedListener(()=>{
@@ -41,18 +38,18 @@ Navigation.events().registerAppLaunchedListener(()=>{
               component :{
                 name : 'App' ,
                 id :'appId' ,
-                // options: {
-                //   sideMenu: {
-                //       left: {
-                //           component: {
+                options: {
+                  sideMenu: {
+                      left: {
+                          component: {
 
-                //               name: 'SideMenu',
-                //           },
-                //           visible: false,
-                //           enabled: false                     
-                //         }
-                //   }
-                // },
+                              name: 'SideMenu',
+                          },
+                          visible: false,
+                          enabled: false                     
+                        }
+                  }
+                },
               
               }
             }] ,
@@ -63,12 +60,12 @@ Navigation.events().registerAppLaunchedListener(()=>{
             }
           }
         } //end center
-        // ,left :{
-        //   component :{
-        //     id : 'SideMenu' ,
-        //     name :'SideMenu' ,
-        //   } ,
-        // }
+        ,left :{
+          component :{
+            id : 'SideMenu' ,
+            name :'SideMenu' ,
+          } ,
+        }
     
       } // end side menu
 
