@@ -2,14 +2,16 @@
 import React, { Component } from 'react';
 import { Navigation } from 'react-native-navigation';
 import Icon1 from 'react-native-vector-icons/FontAwesome';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import Icon2 from 'react-native-vector-icons/MaterialIcons';
 import Icon3 from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import store from '../store';
 import { Provider } from 'react-redux';
-import {  StyleSheet, View, Text , Dimensions ,TouchableWithoutFeedback} from 'react-native';
+import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image } from 'react-native';
 import Home from '../Screens/Home/Home'
-import AddItem from '../Screens/Item/AddItem'
+import AddItem from '../Screens/Item/AddPost'
 import Login from '../Screens/Login/Login'
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
@@ -21,8 +23,8 @@ import database from '@react-native-firebase/database';
 
 
 const { width } = Dimensions.get('window');
-const {uid} = auth().currentUser.uid ;
-const {ref} = database().ref(`/users/${uid}`);
+const { uid } = auth().currentUser.uid;
+const { ref } = database().ref(`/users/${uid}`);
 
 //     ref.on('value', (snapshot) => {
 //     const userObj = snapshot.val();
@@ -33,31 +35,31 @@ const {ref} = database().ref(`/users/${uid}`);
 
 Navigation.registerComponent('Home', () => (props) => (
     <Provider store={store}>
-            <Home {...props} />
+        <Home {...props} />
     </Provider>
 ), () => Home);
 Navigation.registerComponent('AddItem', () => (props) => (
-        <Provider store={store}>
-                <AddItem {...props} />
-        </Provider>
-    ), () => AddItem);
+    <Provider store={store}>
+        <AddItem {...props} />
+    </Provider>
+), () => AddItem);
 
 Navigation.registerComponent('Login', () => (props) => (
     <Provider store={store}>
-            <Login {...props} />
+        <Login {...props} />
     </Provider>
 ), () => Login);
 
 
 
-  class SideMenu extends Component {
+class SideMenu extends Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             photo: true,
-           
+
 
         };
 
@@ -74,7 +76,7 @@ Navigation.registerComponent('Login', () => (props) => (
     //     });
 
     // }
-    goToAddItem() {
+    goToAddPost() {
         Navigation.dismissAllModals();
         Navigation.showModal({
             component: {
@@ -99,62 +101,62 @@ Navigation.registerComponent('Login', () => (props) => (
 
     }
 
- 
-   
+
+
     render() {
-        const {photo} = this.state
-      
-      const  goToLogin =()=>{
+        const { photo } = this.state
+
+        const goToLogin = () => {
             console.log("aaaa");
-            Navigation.push( 'homeId' ,{
+            Navigation.push('homeId', {
                 component: {
                     id: 'loginId',
                     name: 'Login',
-                   
+
                 }
-                
+
             });
 
             Navigation.mergeOptions('homeId', {
                 sideMenu: {
-                  left: {
-                    visible: false,
-                   
-                  },
+                    left: {
+                        visible: false,
+
+                    },
                 },
-              });
-            
-    
+            });
+
+
         }
-        
-        
 
-        const goToAddItem =()=> {
-            
-             Navigation.push( 'homeId' ,{
-                 component: {
-                     id: 'addItemId',
-                     name: 'AddItem',
-                     passProps: {
-                         title: 'Add Item'
-                     }
-                 }
-             });
 
-             Navigation.mergeOptions('homeId', {
+
+        const goToAddPost = () => {
+
+            Navigation.push('homeId', {
+                component: {
+                    id: 'addItemId',
+                    name: 'AddItem',
+                    passProps: {
+                        title: 'Add Item'
+                    }
+                }
+            });
+
+            Navigation.mergeOptions('homeId', {
                 sideMenu: {
-                  left: {
-                    visible: false,
-                   
-                  },
-                },
-              });
-            
-         }
+                    left: {
+                        visible: false,
 
-         const goToHome =()=> {
-            
-            Navigation.push( 'homeId' ,{
+                    },
+                },
+            });
+
+        }
+
+        const goToHome = () => {
+
+            Navigation.push('homeId', {
                 component: {
                     id: 'homeId',
                     name: 'Home',
@@ -165,30 +167,31 @@ Navigation.registerComponent('Login', () => (props) => (
             });
 
             Navigation.mergeOptions('homeId', {
-               sideMenu: {
-                 left: {
-                   visible: false,
-                   
-                 },
-               },
-             });
-           
-        }
-     
-   
-      
-    
+                sideMenu: {
+                    left: {
+                        visible: false,
 
-         
+                    },
+                },
+            });
+
+        }
+
+
+
+
+
+
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                   {/* { !photo ? <Image source ={require('../assets/images/profile.png') } style ={styles.imageHeader}/>
-                   : <Image source ={{uri : ref.child('photo').child('uri')}} style ={styles.imageHeader}/>} */}
+                    <Image source={require('../assets/images/profile.png')} style={styles.imageHeader} />
+
+                    {/*     : <Image source ={{uri : ref.child('photo').child('uri')}} style ={styles.imageHeader}/> */}
 
                     <Text style={styles.textHeader} >
                         {this.props.email}
-                   </Text>
+                    </Text>
                 </View>
 
 
@@ -197,10 +200,32 @@ Navigation.registerComponent('Login', () => (props) => (
                     <Icon1
                         style={styles.Icons}
                         name='home'
-                        size={30}
+                        size={25}
                         color='#3b3c4e' />
                     <Text style={styles.ItemsText}
-                     onPress={goToHome}> Home</Text>
+                        onPress={goToHome}>{"Home"}</Text>
+
+                </View>
+                <View style={styles.MenuItems}>
+
+                    <FontAwesome5
+                        style={styles.Icons}
+                        name='user-alt'
+                        size={25}
+                        color='#3b3c4e' />
+                    <Text style={styles.ItemsText}
+                        onPress={goToHome}>{"My profile"}</Text>
+
+                </View>
+                <View style={styles.MenuItems}>
+
+                    <FontAwesome5
+                        style={styles.Icons}
+                        name='users'
+                        size={25}
+                        color='#3b3c4e' />
+                    <Text style={styles.ItemsText}
+                        onPress={goToHome}>{"My friends"}</Text>
 
                 </View>
 
@@ -209,9 +234,9 @@ Navigation.registerComponent('Login', () => (props) => (
                     <Icon2
                         style={styles.Icons}
                         name='chat'
-                        size={30}
+                        size={25}
                         color='#3b3c4e' />
-                    <Text style={styles.ItemsText} onPress={goToAddItem} > Add Item</Text>
+                    <Text style={styles.ItemsText} onPress={goToAddPost} >{"Add Post"}</Text>
 
                 </View>
 
@@ -242,19 +267,19 @@ Navigation.registerComponent('Login', () => (props) => (
                   <Text style ={styles.ItemsText} > مشاركة التطبيق</Text>
               </View> */}
 
-               <TouchableWithoutFeedback >
-               <View style={styles.LogoutItem}  >
-                  <Icon3 
-                  style ={styles.logoutIcon}
-                  name ='logout'
-                  size = {30}
-                  color ='green'/>
-                  <Text style ={styles.logoutText} onPress ={goToLogin}>  {"Logout"} </Text>
-              </View> 
+                <TouchableWithoutFeedback >
+                    <View style={styles.LogoutItem}  >
+                        <Icon3
+                            style={styles.logoutIcon}
+                            name='logout'
+                            size={30}
+                            color='green' />
+                        <Text style={styles.logoutText} onPress={goToLogin}>  {"Logout"} </Text>
+                    </View>
 
-               </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
 
-                 
+
             </View>
         );
     }
@@ -283,7 +308,7 @@ const styles = StyleSheet.create({
         width: width / 3,
         height: width / 3,
         marginLeft: width / 4,
-        borderRadius :100
+        borderRadius: 100
 
 
     },
@@ -302,21 +327,22 @@ const styles = StyleSheet.create({
     },
     LogoutItem: {
         flexDirection: 'row',
-        marginVertical: 10 ,
-        borderTopColor : '#d4d4d7',
-        borderTopWidth :1
+        marginVertical: 10,
+        borderTopColor: '#d4d4d7',
+        borderTopWidth: 1
 
     },
     Icons: {
-        marginLeft: 20
+        marginLeft: 20,
+        marginTop:2 
 
 
     },
     ItemsText: {
         color: 'rgba(0,0,0,0.6)',
-        fontSize: 25,
+        fontSize: 22,
         //marginTop :3 ,
-        marginRight: 4,
+        marginLeft: 10,
         textAlign: 'justify'
 
 
@@ -324,14 +350,14 @@ const styles = StyleSheet.create({
     logoutIcon: {
         color: 'rgba(255,99,71 ,0.8) ',
         marginLeft: 20,
-        paddingTop :7
+        paddingTop: 7
 
 
     },
     logoutText: {
         color: 'rgba(255,99,71,0.7) ',
         fontSize: 25,
-        paddingTop :7
+        paddingTop: 7
 
     }
 
@@ -341,7 +367,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    email : state.auth.email 
+    email: state.auth.email
 
 })
 

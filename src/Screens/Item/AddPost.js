@@ -71,7 +71,7 @@ class AddItem extends Component {
 
 
         if (photo) {
-            if (Item_Name) {
+          
                 if (Item_Video) {
                     realm.write(() => {
                         var ID =
@@ -120,9 +120,6 @@ class AddItem extends Component {
 
                 }
 
-            } else {
-                alert('Please enter item name');
-            }
         } else {
             alert('Please Add item image');
         }
@@ -175,7 +172,7 @@ class AddItem extends Component {
         
         return (
             <View style={styles.container}>
-                <Header title='Add Item'  color='#FFF' backgroundColor='#3b3c4e' showBack showMenu  componentId={this.props.componentId } />
+                <Header title='Add post'  color='#FFF' backgroundColor='#3b3c4e' showBack showMenu  componentId={this.props.componentId } />
 
                 <ScrollView style={{ flex: 1 }} contentContainerStyle={{ justifyContent: 'center', marginTop :5 ,}}>
                     {photo ? <Image source={{ uri: photo.uri }} style={{ width: 300, height: 300, alignSelf: 'center' ,resizeMode:'stretch' }} />
@@ -210,24 +207,11 @@ class AddItem extends Component {
                     </View>
 
 
+                    
                     <Input
                         containerStyle={styles.textInputStyle}
-                        placeholder='Please enter item name'
-                        onChangeText={(Item_Name) => this.setState({ Item_Name })}
-                        placeholderTextColor='white'
-                        inputStyle={
-                            { color: 'white' }
-                        }
-                        inputContainerStyle={
-                            { borderBottomWidth: 0 }
-                        }
-                     
-                        name='userName' />
-
-                    <Input
-                        containerStyle={styles.textInputStyle}
-                        placeholder='Please enter item price'
-                        onChangeText={(Item_Price) => this.setState({ Item_Price })}
+                        placeholder='Please enter item Video'
+                        onChangeText={(Item_Video) => this.setState({ Item_Video})}
                         placeholderTextColor='white'
                         inputStyle={
                             { color: 'white' }
@@ -239,7 +223,7 @@ class AddItem extends Component {
                         name='userName' />
                         <Input
                         containerStyle={styles.textAreaStyle}
-                        placeholder='Please enter item description ..'
+                        placeholder='Enter post here ..'
                         onChangeText={(Item_description) => this.setState({ Item_description })}
                         placeholderTextColor='white'
                         inputStyle={
