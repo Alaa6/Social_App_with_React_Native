@@ -7,6 +7,7 @@ export const LOGIN_ATTEMPT = 'LOGIN_ATTEMPT';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const LOGIN_FAILURE = 'LOGIN_FAILURE';
 export const USER_TYPE = 'USER_TYPE';
+export const GET_USER_DATA ='GET_USER_DATA'
 
 //Signup actions
 export const REGISTER_ATTEMPT = 'REGISTER_ATTEMPT';

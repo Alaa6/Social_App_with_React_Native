@@ -15,6 +15,7 @@ import { loginRequest } from '../../actions/auth';
 
 /*Firebase */
 import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 
 
@@ -30,6 +31,7 @@ Navigation.registerComponent('Home', () => (props) => (
         <Home {...props} />
     </Provider>
 ), () => Home);
+
 
 
 
@@ -85,8 +87,7 @@ function goToHomeScreen(email) {
 }
 
 async function login(email, password ) {
-    console.log('emaaaaal' + email);
-    console.log('paaas' + password);
+  
     try {
         await auth().signInWithEmailAndPassword(email, password);
         goToHomeScreen(email)
@@ -146,6 +147,7 @@ class Login extends ValidationComponent {
 
 
     render() {
+     
        
         console.log("render  login  "   + this.props.componentId);
 

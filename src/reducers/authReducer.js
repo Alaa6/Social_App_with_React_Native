@@ -1,13 +1,17 @@
 import {
     LOGIN_ATTEMPT, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT, ORDER,
-    REGISTER_ATTEMPT, USER_TYPE, REGISTER_SUCCESS, REGISTER_FAILURE, UPDATE_INFO, UPDATE_Failed
+    REGISTER_ATTEMPT, USER_TYPE, REGISTER_SUCCESS, REGISTER_FAILURE, UPDATE_INFO, UPDATE_Failed, GET_USER_DATA
 } from '../actions/types';
 
 const INITIAL_STATE = {
-        email: '',
-        password: '' ,
-        error: '',
-        userType: 'INFLUENCER', ordersCounts: {}, success: false, token: '', processing: false, order: null
+    email: '',
+    password: '',
+    fName: '',
+    lName: '',
+    photoUri: '',
+    address: '',
+    error: '',
+    userType: 'INFLUENCER', ordersCounts: {}, success: false, token: '', processing: false, order: null
 };
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,7 +26,15 @@ export default (state = INITIAL_STATE, action) => {
         case LOGIN_FAILURE:
             return { ...state, processing: false, success: false, error: action.error };
         case LOGIN_SUCCESS:
-            return { ...state, processing: false, success: true, email :action.email ,password:action.password, error: ''};
+            return {
+                ...state, processing: false, success: true, email: action.email, password: action.password, error: ''
+            };
+        case GET_USER_DATA:
+            return {
+                ...state, processing: false, success: true,
+                fName: action.fName, lName: action.lName, photoUri: action.photoUri,
+                address: action.address, error: ''
+            };
         case UPDATE_INFO:
             return { ...state, processing: false, user: action.payload };
         case UPDATE_Failed:

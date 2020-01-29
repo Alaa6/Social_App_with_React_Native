@@ -1,120 +1,50 @@
 
 import {
   LOGIN_ATTEMPT, LOGIN_SUCCESS, LOGIN_FAILURE, LOGOUT, COUNT_OF_UN_SEEN_NOTIFICATION, UPDATE_INFO,
-  REGISTER_ATTEMPT, REGISTER_SUCCESS, UPDATE_Failed, USER_TYPE, REGISTER_FAILURE,
+  REGISTER_ATTEMPT, REGISTER_SUCCESS, UPDATE_Failed, USER_TYPE, REGISTER_FAILURE ,GET_USER_DATA,
 } from './types';
-//import { API_ENDPOINT } from '../configs';
-//import { showError, showInfo } from '../ui/utils/localNotifications';
 import axios from 'axios';
 import { AsyncStorage, Platform } from 'react-native';
-//import Navigation from '../ui/Navigation';
 import store from '../store'
 import I18n from 'react-native-i18n'
 import { RNToasty } from 'react-native-toasty';
-//import { utils } from './socket';
+
+import auth from '@react-native-firebase/auth';
+import database from '@react-native-firebase/database';
 
 let notificationListener;
+
 
 const getLang = () => {
   return store.getState().lang.lang
 }
 
-// export const firstTime = () => async (dispatch) => {
-
-//   const first = await AsyncStorage.getItem('firstTime');
-//   console.log('from first first', first)
-//   if (first) {
-//     return false;
-//   }
-//   return true;
-// };
-
-// export const setFirstTime = () => async () => {
-//   await AsyncStorage.setItem("firstTime", JSON.stringify({ first: true }));
-// }
-
-// export const autoLogin = () => async (dispatch) => {
-
-//   const user = await AsyncStorage.getItem('User');
-//   console.log('from auto login', user)
-//   const token = await AsyncStorage.getItem('Token');
-
-//   if (user) {
-//     initFirebase(token);
-//     dispatch({ type: LOGIN_SUCCESS, payload: JSON.parse(user), token: JSON.parse(token) });
-//     return true;
-//   }
-//   return false;
-// };
-
-
-// export const loginSocial = (data) => async (dispatch) => {
-//   axios.post(`${API_ENDPOINT}/socialLogin`, data, {
-//     headers: {
-//       'Content-Type': 'application/json',
-//       'Accept-Language': getLang()
-//     },
-//   }).then(async response => {
-//     dispatch({ type: LOGIN_SUCCESS, payload: response.data.user, token: response.data.token });
-//     // dispatch({ type: CLOSE_MODAL });
-//     await AsyncStorage.setItem("User", JSON.stringify(response.data.user));
-//     await AsyncStorage.setItem("Token", JSON.stringify(response.data.token));
-//     initFirebase(response.data.token);
-//     // Navigation.pop();
-//     Navigation.init('MAIN_STACK', {
-//       rtl: store.getState().lang.rtl,
-//       sideMenu: 'SideMenu',
-//       name: 'Home',
-//     });
-
-//   }).catch((error) => {
-//     if (!error.response) {
-//       showError(I18n.t('ui-networkConnectionError'));
-//       dispatch({ type: LOGIN_FAILURE, error: I18n.t('ui-networkConnectionError') });
-//       return;
-//     }
-//     else {
-//       showError(I18n.t('ui-error-happened'));
-//       dispatch({ type: LOGIN_FAILURE, error: I18n.t('ui-error-happened') });
-//       return;
-//     }
-
-//   })
-// };
-
-// export const forgetPassword = (data, remeber, shouldLogin) => async (dispatch) => {
-
-//   dispatch({ type: LOGIN_SUCCESS, payload: data.user, token: data.token });
-//   if (remeber) {
-//     await AsyncStorage.setItem("User", JSON.stringify(data.user));
-//     await AsyncStorage.setItem("Token", JSON.stringify(data.token));
-//   }
-//   initFirebase(data.token);
-//   if (shouldLogin) {
-//     Navigation.pop();
-//     Navigation.pop();
-//     Navigation.pop();
-//     //dispatch(utils());
-//   }
-//   else {
-//     Navigation.init('MAIN_STACK', {
-//       rtl: store.getState().lang.rtl,
-//       sideMenu: 'SideMenu',
-//       name: 'HomeTabs',
-//     });
-//   }
-
-// };
 
 export const typeloginRequest = (type) => async (dispatch) => {
   dispatch({ type: USER_TYPE, payload: type });
 }
 
-export const loginRequest = (email , password , remeber, shouldLogin) => async (dispatch) => {
+export const loginRequest = (email , password ,remeber, shouldLogin) => async (dispatch) => {
   dispatch({ type: LOGIN_ATTEMPT });
   console.log(  'i am ' +email + '&&'+ password)
-
+   
    handleResponse(dispatch , email ,password)
+  
+
+    // Get the users ID
+  const uid = auth().currentUser.uid;
+
+  // Create a reference
+  const ref = database().ref(`/users/${uid}`);
+
+  // Fetch the data snapshot
+  const snapshot = await ref.once('value');
+  const  firstName= snapshot.child('firstName').val();
+  const  lastName= snapshot.child('lastName').val();
+  const  photoUri= snapshot.child('photo').child('uri').val();
+  const  address= snapshot.child('address').val();
+
+  saveUserData(dispatch ,firstName,lastName,photoUri,address);
 
 
   // axios.post(`${API_ENDPOINT}/signin`, values, {
@@ -161,26 +91,29 @@ export const loginRequest = (email , password , remeber, shouldLogin) => async (
 };
 
 
-const handleResponse =(dispatch ,email ,password)=>{
+const handleResponse =(dispatch ,email ,password ,fName ,lName,photoUri ,address)=>{
   if(email){
 
-      onLoginSuccess(dispatch ,email ,password );
+      onLoginSuccess(dispatch ,email ,password ,fName ,lName,photoUri ,address);
 
   }
   else
   {
       onLoginFailed(dispatch ,'user  not found '); 
 
-  } 
-
-
+  }
   
 }
-const onLoginSuccess =(dispatch ,email ,password)=>{
+const onLoginSuccess =(dispatch ,email ,password,fName ,lName,photoUri ,address)=>{
   dispatch ({
       type :LOGIN_SUCCESS ,
       email : email ,
-      password :password
+      password :password,
+      fName :fName ,
+      lName:lName,
+      photoUri:photoUri,
+      address:address
+
   })
 
 }
@@ -191,6 +124,20 @@ const onLoginFailed =(dispatch ,errorMessage)=>{
       error :errorMessage
   })
 
+}
+
+const saveUserData =(dispatch ,fName ,lName,photoUri ,address)=>{
+
+  dispatch ({
+    type :GET_USER_DATA ,
+    fName :fName ,
+    lName:lName,
+    photoUri:photoUri,
+    address:address
+
+})
+ 
+  
 }
 
 

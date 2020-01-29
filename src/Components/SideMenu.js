@@ -13,25 +13,8 @@ import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image } f
 import Home from '../Screens/Home/Home'
 import AddItem from '../Screens/Item/AddPost'
 import Login from '../Screens/Login/Login'
-import auth from '@react-native-firebase/auth';
-import database from '@react-native-firebase/database';
-
-
-
-
-
-
 
 const { width } = Dimensions.get('window');
-const { uid } = auth().currentUser.uid;
-const { ref } = database().ref(`/users/${uid}`);
-
-//     ref.on('value', (snapshot) => {
-//     const userObj = snapshot.val();
-//     const name = userObj.firstName;
-//    // this.avatar = userObj.avatar;
-//   });
-
 
 Navigation.registerComponent('Home', () => (props) => (
     <Provider store={store}>
@@ -60,22 +43,10 @@ class SideMenu extends Component {
         this.state = {
             photo: true,
 
-
         };
 
     }
 
-
-    // goToChat() {
-    //     Navigation.dismissAllModals();
-    //     Navigation.showModal({
-    //         component: {
-    //             //id: 'chatId',
-    //             //name: 'Guide.chat'
-    //         }
-    //     });
-
-    // }
     goToAddPost() {
         Navigation.dismissAllModals();
         Navigation.showModal({
@@ -87,8 +58,9 @@ class SideMenu extends Component {
                 }
             }
         });
-    }
 
+
+    }
 
     goToFavorite() {
         Navigation.dismissAllModals();
@@ -104,8 +76,7 @@ class SideMenu extends Component {
 
 
     render() {
-        const { photo } = this.state
-
+        const {photo} =this.state ; 
         const goToLogin = () => {
             console.log("aaaa");
             Navigation.push('homeId', {
@@ -185,12 +156,12 @@ class SideMenu extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Image source={require('../assets/images/profile.png')} style={styles.imageHeader} />
+                   {!photo? <Image source={require('../assets/images/profile.png')} style={styles.imageHeader} />
 
-                    {/*     : <Image source ={{uri : ref.child('photo').child('uri')}} style ={styles.imageHeader}/> */}
+                      : <Image source ={{uri : this.props.photoUri}} style ={styles.imageHeader}/> }
 
                     <Text style={styles.textHeader} >
-                        {this.props.email}
+                        {this.props.fName +' ' +this.props.lName}
                     </Text>
                 </View>
 
@@ -240,33 +211,7 @@ class SideMenu extends Component {
 
                 </View>
 
-                {/* <View style={styles.MenuItems}>
-                  <Icon2 
-                  style ={styles.Icons}
-                  name ='favorite'
-                  size = {30}
-                  color ='green'/>
-                  <Text style ={styles.ItemsText} onPress={this.goToFavorite}> المفضلة</Text>
-              </View> */}
-                {/* 
-              <View style={styles.MenuItems}>
-                  <Icon2 
-                  style ={styles.Icons}
-                  name ='settings'
-                  size = {30}
-                  color ='green'/>
-                  <Text style ={styles.ItemsText} > الاعدادات</Text>
-              </View> */}
-
-                {/* <View style={styles.MenuItems}>
-                  <Icon2 
-                  style ={styles.Icons}
-                  name ='share'
-                  size = {30}
-                  color ='green'/>
-                  <Text style ={styles.ItemsText} > مشاركة التطبيق</Text>
-              </View> */}
-
+              
                 <TouchableWithoutFeedback >
                     <View style={styles.LogoutItem}  >
                         <Icon3
@@ -334,7 +279,7 @@ const styles = StyleSheet.create({
     },
     Icons: {
         marginLeft: 20,
-        marginTop:2 
+        marginTop: 2
 
 
     },
@@ -367,7 +312,14 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-    email: state.auth.email
+    email: state.auth.email,
+    fName : state.auth.fName ,
+    lName : state.auth.lName ,
+    photoUri : state.auth.photoUri ,
+    address : state.auth.address ,
+
+
+    
 
 })
 
