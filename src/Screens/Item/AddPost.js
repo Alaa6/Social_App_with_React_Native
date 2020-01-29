@@ -44,7 +44,7 @@ class AddItem extends Component {
 
         };
 
-        realm = new Realm({ path: 'SocialDB.realm' });
+        realm = new Realm({ path: 'SocialDB.realm' ,schemaVersion:2});
     }
 
      goToHome=()=> {
@@ -75,12 +75,12 @@ class AddItem extends Component {
                 if (Item_Video) {
                     realm.write(() => {
                         var ID =
-                            realm.objects('Item_Details').sorted('item_id', true).length > 0
-                                ? realm.objects('Item_Details').sorted('item_id', true)[0]
-                                    .item_id + 1
+                            realm.objects('Item_Details').sorted('post_id', true).length > 0
+                                ? realm.objects('Item_Details').sorted('post_id', true)[0]
+                                    .post_id + 1
                                 : 1;
                         realm.create('Item_Details', {
-                            item_id: ID,
+                            post_id: ID,
                             item_Name: Item_Name,
                             item_Image: photo.uri,
                             item_video: Item_Video ,

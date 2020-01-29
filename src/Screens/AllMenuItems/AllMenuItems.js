@@ -41,7 +41,7 @@ class ViewAllMenuItem extends React.Component {
             FlatListItems: [],
 
         };
-        realm = new Realm({ path: 'SocialDB.realm' });
+        realm = new Realm({ path: 'SocialDB.realm'  ,schemaVersion:2});
 
         var Item_details = realm.objects('Item_Details');
 

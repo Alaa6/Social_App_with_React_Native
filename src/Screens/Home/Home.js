@@ -35,15 +35,16 @@ let realm ;
 
     realm = new Realm({
       path: 'SocialDB.realm',
+      schemaVersion: 2 ,
       schema: [
         {
           name: 'Item_Details',
+        
           properties: {
             userName : {type : 'string' ,indexed:true ,default :false} ,
             userPhoto :'string' ,
             userEmail: {type : 'string' ,indexed:true ,default :false} ,
-            item_id: { type: 'int', default: 0 },
-            item_Name :{type : 'string' ,indexed:true ,default :false},
+            post_id: { type: 'int', default: 0 },
             item_video :{type : 'string' ,indexed:true ,default :false},
             item_Image:'string' ,
             item_description :{type : 'string' ,indexed:true ,default :false}

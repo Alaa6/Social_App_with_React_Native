@@ -457,6 +457,7 @@ const styles = StyleSheet.create({
 
 
 
+
     },
     TxtStyle: {
 
@@ -465,7 +466,8 @@ const styles = StyleSheet.create({
         marginTop: width / 10,
         alignSelf: 'center',
         fontStyle: 'italic',
-        marginHorizontal: 10
+        marginHorizontal: 10 ,
+      
 
 
 

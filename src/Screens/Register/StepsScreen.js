@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView ,TouchableOpacity ,Image, ToastAndroid} from 'react-native';
+import { Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Image, ToastAndroid } from 'react-native';
 import { View } from 'native-base';
 import { Navigation } from 'react-native-navigation'
 import store from '../../store';
@@ -7,7 +7,7 @@ import { connect, Provider } from 'react-redux'
 import { ProgressSteps, ProgressStep } from 'react-native-progress-steps';
 import ValidationComponent from 'react-native-form-validator';
 import { Input } from 'react-native-elements';
-import MyButton from  '../../Components/MyButton'
+import MyButton from '../../Components/MyButton'
 import ImagePicker from 'react-native-image-picker';
 import Login from '../Login/Login';
 
@@ -44,7 +44,7 @@ async function register(email, password) {
 
 
 
-async function saveUserData(email, firstName, lastName, address, photo) {
+async function saveUserData(email, firstName, lastName, address, photo ,phone) {
   const uid = auth().currentUser.uid;
 
   const ref = database().ref(`/users/${uid}`);
@@ -55,7 +55,8 @@ async function saveUserData(email, firstName, lastName, address, photo) {
     firstName,
     lastName,
     address,
-    photo
+    photo ,
+    phone
 
   });
 }
@@ -77,8 +78,9 @@ class RegisterSteps extends ValidationComponent {
       address: '',
       confPassword: '',
       photo: '',
-      nextBtn: false ,
-      showCreateBtn:true
+      nextBtn: false,
+      showCreateBtn: true ,
+      phone :''
     }
   }
 
@@ -112,7 +114,7 @@ class RegisterSteps extends ValidationComponent {
     ImagePicker.launchImageLibrary(options, response => {
       console.log('resposns' + response);
       if (response.uri) {
-        this.setState({ photo: response });
+        this.setState({ photo: response.uri });
       }
     });
 
@@ -145,7 +147,7 @@ class RegisterSteps extends ValidationComponent {
 
   render() {
 
-    const { email, password, firstName, lastName, address, confPassword, photo  ,showCreateBtn} = this.state;
+    const { email, password, firstName, lastName, address, confPassword, photo, showCreateBtn ,phone} = this.state;
     console.log('sss' + photo.uri);
 
 
@@ -156,7 +158,7 @@ class RegisterSteps extends ValidationComponent {
           if (password === confPassword) {
 
             register(this.state.email.trim(), this.state.password);
-            this.setState({ nextBtn: true ,showCreateBtn:false })
+            this.setState({ nextBtn: true, showCreateBtn: false })
 
 
           }
@@ -194,36 +196,34 @@ class RegisterSteps extends ValidationComponent {
 
     const saveData = () => {
 
-      if(firstName)
-      {
-        if(lastName)
-        {
-          if(address)
-          {
-            saveUserData(  email ,firstName, lastName, address, photo);
+      if (firstName) {
+        if (lastName) {
+          if (address) {
+
+            saveUserData(email, firstName, lastName, address,  photo ,phone);
             ToastAndroid.show(' your registration is done successfully ^^', ToastAndroid.LONG);
             goToLoginScreen();
-  
+
           }
-          else{
+          else {
 
             alert('please enter your address to complete this registration ! ')
           }
 
         }
-        else{
+        else {
           alert('please enter your last name to complete this registration ! ')
 
         }
-       
+
 
       }
-      else{
+      else {
         alert('please enter your first name to complete this registration ! ')
 
       }
 
-     
+
 
     }
 
@@ -330,118 +330,136 @@ class RegisterSteps extends ValidationComponent {
 
           </ProgressStep>
           <ProgressStep label="User Information" nextBtnStyle={styles.btnStyle2} nextBtnText='التالي' nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText='السابق' previousBtnStyle={styles.btnStyle1} previousBtnTextStyle={{ color: '#3b3c4e' }} onSubmit={saveData}>
-          <View style={styles.container}>
-
-            
-<View style={{ alignSelf: 'center', marginTop: 10 }}>
-{!photo ?  <TouchableOpacity onPress={this.handleImagePicker}  >
-        <Ant
-            //style={styles.TxtStyle}
-            name='adduser'
-            size={100}
-            color='#9899a2'
-        />
-    </TouchableOpacity>
-: <Image source={{ uri: photo.uri }} style={{  width: width / 2, height: width / 2, alignSelf: 'center' ,resizeMode:'center' ,borderRadius:100 }} />
-    }
-
-</View>
+            <View style={styles.container}>
 
 
-<ScrollView style={{ flex: 1 }}>
-
-    <Text style={{ color: 'red' }}> {this.getErrorMessages()}  </Text>
-
-    <View style={styles.InputView}>
-       
-        <Input
-            ref="name"
-            placeholder='First name'
-            autoCapitalize="none"
-            onChangeText={(firstName) => this.setState({ firstName })}
-            placeholderTextColor='#9899a2'
-            inputStyle={
-                { color: '#9899a2' }
-            }
-            inputContainerStyle={
-                {
-                    borderBottomWidth: 1
-                    , borderBottomColor: '#e3e3e3'
-                }
-            }
-            rightIcon={
-                <FontAwesome5
-                    name='user-alt'
-                    size={20}
+              <View style={{ alignSelf: 'center', marginTop: 10 }}>
+                {!photo ? <TouchableOpacity onPress={this.handleImagePicker}  >
+                  <Ant
+                    //style={styles.TxtStyle}
+                    name='adduser'
+                    size={100}
                     color='#9899a2'
-
-                />
-            }
-        />
-
-        <Input
-            ref="name"
-            placeholder='Last name'
-            autoCapitalize="none"
-            onChangeText={(lastName) => this.setState({ lastName })}
-            placeholderTextColor='#9899a2'
-            inputStyle={
-                { color: '#9899a2' }
-            }
-            inputContainerStyle={
-                {
-                    borderBottomWidth: 1
-                    , borderBottomColor: '#e3e3e3'
+                  />
+                </TouchableOpacity>
+                  : <Image source={{ uri: photo }} style={{ width: width / 2, height: width / 2, alignSelf: 'center', resizeMode: 'center', borderRadius: 100 }} />
                 }
-            }
-            rightIcon={
-                <FontAwesome5
-                    name='user-alt'
-                    size={20}
-                    color='#9899a2'
 
-                />
-            }
-        />
+              </View>
 
 
+              <ScrollView style={{ flex: 1 }}>
 
-        <Input
-            ref="name"
-            placeholder='Address'
-            autoCapitalize="none"
-            onChangeText={(address) => this.setState({ address })}
-            placeholderTextColor='#9899a2'
-            inputStyle={
-                { color: '#9899a2' }
-            }
-            inputContainerStyle={
-                {
-                    borderBottomWidth: 1
-                    , borderBottomColor: '#e3e3e3'
-                }
-            }
-            rightIcon={
-                <FontAwesome
-                    name='map-marker'
-                    size={25}
-                    color='#9899a2'
+                <Text style={{ color: 'red' }}> {this.getErrorMessages()}  </Text>
 
-                />
-            }
-        />
+                <View style={styles.InputView}>
 
-        
+                  <Input
+                    ref="name"
+                    placeholder='First name'
+                    autoCapitalize="none"
+                    onChangeText={(firstName) => this.setState({ firstName })}
+                    placeholderTextColor='#9899a2'
+                    inputStyle={
+                      { color: '#9899a2' }
+                    }
+                    inputContainerStyle={
+                      {
+                        borderBottomWidth: 1
+                        , borderBottomColor: '#e3e3e3'
+                      }
+                    }
+                    rightIcon={
+                      <FontAwesome5
+                        name='user-alt'
+                        size={20}
+                        color='#9899a2'
+
+                      />
+                    }
+                  />
+
+                  <Input
+                    ref="name"
+                    placeholder='Last name'
+                    autoCapitalize="none"
+                    onChangeText={(lastName) => this.setState({ lastName })}
+                    placeholderTextColor='#9899a2'
+                    inputStyle={
+                      { color: '#9899a2' }
+                    }
+                    inputContainerStyle={
+                      {
+                        borderBottomWidth: 1
+                        , borderBottomColor: '#e3e3e3'
+                      }
+                    }
+                    rightIcon={
+                      <FontAwesome5
+                        name='user-alt'
+                        size={20}
+                        color='#9899a2'
+
+                      />
+                    }
+                  />
 
 
-    </View>
 
-    
-</ScrollView>
+                  <Input
+                    placeholder='Address'
+                    autoCapitalize="none"
+                    onChangeText={(address) => this.setState({ address })}
+                    placeholderTextColor='#9899a2'
+                    inputStyle={
+                      { color: '#9899a2' }
+                    }
+                    inputContainerStyle={
+                      {
+                        borderBottomWidth: 1
+                        , borderBottomColor: '#e3e3e3'
+                      }
+                    }
+                    rightIcon={
+                      <FontAwesome
+                        name='map-marker'
+                        size={25}
+                        color='#9899a2'
+
+                      />
+                    }
+                  />
+
+                  <Input
+                    placeholder='phone number'
+                    autoCapitalize="none"
+                    onChangeText={(phone) => this.setState({ phone })}
+                    placeholderTextColor='#9899a2'
+                    inputStyle={
+                      { color: '#9899a2' }
+                    }
+                    inputContainerStyle={
+                      {
+                        borderBottomWidth: 1
+                        , borderBottomColor: '#e3e3e3'
+                      }
+                    }
+                    rightIcon={
+                      <MaterialIcons
+                    
+                      name='phone-iphone'
+                      size={25}
+                      color='#9899a2' />
+                    }
+                  />
+                </View>
+
+
+              </ScrollView>
 
 
 
-</View>
+            </View>
           </ProgressStep>
 
         </ProgressSteps>

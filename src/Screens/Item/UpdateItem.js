@@ -41,7 +41,7 @@ class UpdateItem extends Component {
 
         };
 
-        realm = new Realm({ path: 'SocialDB.realm' });
+        realm = new Realm({ path: 'SocialDB.realm',schemaVersion:2 });
     }
 
     pushHomeScreen = () => {

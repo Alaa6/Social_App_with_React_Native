@@ -13,6 +13,7 @@ import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image } f
 import Home from '../Screens/Home/Home'
 import AddItem from '../Screens/Item/AddPost'
 import Login from '../Screens/Login/Login'
+import Profile from '../Screens/Profile/profile'
 
 const { width } = Dimensions.get('window');
 
@@ -32,6 +33,12 @@ Navigation.registerComponent('Login', () => (props) => (
         <Login {...props} />
     </Provider>
 ), () => Login);
+Navigation.registerComponent('Profile', () => (props) => (
+    <Provider store={store}>
+        <Profile {...props} />
+    </Provider>
+), () => Profile);
+
 
 
 
@@ -47,31 +54,10 @@ class SideMenu extends Component {
 
     }
 
-    goToAddPost() {
-        Navigation.dismissAllModals();
-        Navigation.showModal({
-            component: {
-                id: 'addItemId',
-                name: 'AddItem',
-                passProps: {
-                    title: 'Add Item'
-                }
-            }
-        });
+  
 
 
-    }
-
-    goToFavorite() {
-        Navigation.dismissAllModals();
-        Navigation.showModal({
-            component: {
-                id: 'favId',
-                name: 'Guide.fav'
-            }
-        });
-
-    }
+    
 
 
 
@@ -96,8 +82,6 @@ class SideMenu extends Component {
                     },
                 },
             });
-
-
         }
 
 
@@ -133,6 +117,29 @@ class SideMenu extends Component {
                     name: 'Home',
                     passProps: {
                         title: 'Home'
+                    }
+                }
+            });
+
+            Navigation.mergeOptions('homeId', {
+                sideMenu: {
+                    left: {
+                        visible: false,
+
+                    },
+                },
+            });
+
+        }
+
+        const goToProfile= () => {
+
+            Navigation.push('homeId', {
+                component: {
+                    id: 'profileId',
+                    name: 'Profile',
+                    passProps: {
+                        title: 'My Profile'
                     }
                 }
             });
@@ -185,7 +192,7 @@ class SideMenu extends Component {
                         size={25}
                         color='#3b3c4e' />
                     <Text style={styles.ItemsText}
-                        onPress={goToHome}>{"My profile"}</Text>
+                        onPress={goToProfile}>{"My profile"}</Text>
 
                 </View>
                 <View style={styles.MenuItems}>
@@ -302,7 +309,8 @@ const styles = StyleSheet.create({
     logoutText: {
         color: 'rgba(255,99,71,0.7) ',
         fontSize: 25,
-        paddingTop: 7
+        paddingTop: 7 ,
+    
 
     }
 
