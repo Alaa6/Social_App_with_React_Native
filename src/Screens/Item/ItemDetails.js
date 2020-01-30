@@ -23,7 +23,7 @@ class ItemDetails extends Component {
             FlatListItems: [],
 
         };
-        realm = new Realm({ path: 'SocialDB.realm' ,schemaVersion:2 });
+        realm = new Realm({ path: 'SocialDB.realm' ,schemaVersion:6});
 
         var Item_details = realm.objects('Item_Details');
 

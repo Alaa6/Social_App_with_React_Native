@@ -8,9 +8,14 @@ import { Provider, connect } from 'react-redux';
 import Home from '../Home/Home'
 import ItemDetails from '../Item/ItemDetails';
 import store from '../../store';
+import { Menu, MenuOptions, MenuOption, MenuTrigger, } from 'react-native-popup-menu';
 
+import auth from '@react-native-firebase/auth';
 
 let realm;
+const uid = auth().currentUser.uid;
+
+
 
 Navigation.registerComponent('UpdateItem', () => (props) => (
     <Provider store={store}>
@@ -41,7 +46,7 @@ class ViewAllMenuItem extends React.Component {
             FlatListItems: [],
 
         };
-        realm = new Realm({ path: 'SocialDB.realm'  ,schemaVersion:2});
+        realm = new Realm({ path: 'SocialDB.realm', schemaVersion: 6 });
 
         var Item_details = realm.objects('Item_Details');
 
@@ -61,18 +66,7 @@ class ViewAllMenuItem extends React.Component {
         );
     };
 
-    pushHomeScreen = () => {
-        Navigation.showModal({
-            component: {
-                id: 'homeId',
-                name: 'Home',
-                passProps: {
-                    photo: this.state.photo
-                }
-            }
-
-        })
-    }
+    
 
     goToItemDetails = () => {
         Navigation.showModal({
@@ -92,21 +86,124 @@ class ViewAllMenuItem extends React.Component {
 
     }
 
+    openMenu = () => {
+     this.menu.open()   
+    };
+
+
+
 
 
 
 
 
     render() {
+        console.log('comans        '+this.props.componentId);
+        
+
+        const pushHomeScreen = () => {
+            Navigation.push('homeId',{
+                component: {
+                    id: 'homeId',
+                    name: 'Home',
+                    passProps: {
+                        photo: this.state.photo
+                    }
+                }
+    
+            })
+        }
+
+  
         return (
             <View style={styles.container}>
+
+
+
                 <FlatList
                     data={this.state.FlatListItems}
                     ItemSeparatorComponent={this.ListViewItemSeparator}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
                         <View style={{ backgroundColor: 'white', padding: 20 }}>
-                            <Swipeout right={[
+                            
+                        { <Menu ref={ref => (this.menu = ref)}>
+                            <MenuTrigger text='' />
+                            <MenuOptions>
+                                <MenuOption onSelect={()=>{
+                                        Navigation.push('homeId',{
+                                        component: {
+                                            id: 'ubdateItemId',
+                                            name: 'UpdateItem',
+                                            passProps: {
+                                                photo: item.item_Image,
+                                                item_name: item.item_Name,
+                                                item_video: item.item_video,
+                                                item_id: item.item_id,
+                                                item_description:item.item_description
+                                            }
+                                        }
+                                    });
+                                }} text='Edit' />
+                                <MenuOption onSelect={ () => {
+
+                                    realm.write(() => {
+                                        realm.delete(
+                                            realm.objects('Item_Details').filtered('post_id =' + item.post_id)
+                                        );
+                                    });
+                                    Alert.alert(
+                                        'Delete',
+                                        'this Item is deleted successfully !',
+                                        [
+
+                                            {
+                                                text: 'Ok', onPress: pushHomeScreen
+
+
+                                            },
+                                        ],
+                                        { cancelable: true }
+                                    );
+                                } } >
+                                    <Text style={{ color: 'red' }}>Delete</Text>
+                                </MenuOption>
+                                {/* <MenuOption onSelect={() => alert(`Not called`)} disabled={true} text='Disabled' /> */}
+                            </MenuOptions>
+                        </Menu>}
+
+                            <TouchableOpacity onLongPress={()=>{
+                                if(item.userId===uid){
+                                    this.menu.open();
+
+                                }
+
+                            }}>
+                                <View style={{ backgroundColor: '#fceef8', }}>
+                                    <View style={{ flexDirection: 'row' }}>
+                                        <Image source={{ uri: item.userPhoto }} style={{ width: 50, height: 50, alignSelf: 'center', marginTop: 5, borderRadius: 100 }} />
+                                        <View>
+                                            <Text style={{ fontWeight: 'bold', fontSize: 18, marginLeft: 4 }}>{item.userName}</Text>
+                                            <Text style={{ fontSize: 15, marginLeft: 4 }}>{item.userEmail}</Text>
+                                            <Text style={{ fontSize: 12, marginLeft: 4, color: '#82838e' }}>{item.post_date}</Text>
+
+                                        </View>
+                                    </View>
+                                    <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>{item.item_description}</Text>
+                                    <Image source={{ uri: item.item_Image }} style={{ width: 300, height: 300, alignSelf: 'center', marginTop: 5, resizeMode: 'stretch' }} />
+                                    <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>video: {item.item_video}</Text>
+
+                                </View>
+
+
+                            </TouchableOpacity>
+
+
+
+
+
+
+                            {/* <Swipeout right={[
                                 {
                                     text: 'Edit',
                                     backgroundColor: 'rgb(0,128,0)',
@@ -145,11 +242,11 @@ class ViewAllMenuItem extends React.Component {
                                                     text: 'Yes', onPress: () => {
                                                         realm.write(() => {
 
-                                                            console.log(item.item_id);
+                                                            
                                                             var Item_Details = realm.objects('Item_Details');
                                                             console.log(Item_Details);
                                                             realm.delete(
-                                                                realm.objects('Item_Details').filtered('item_id =' + item.item_id)
+                                                                realm.objects('Item_Details').filtered('post_id =' + item.post_id)
                                                             );
                                                             var Item_Details = realm.objects('Item_Details');
                                                             console.log(Item_Details);
@@ -200,21 +297,21 @@ class ViewAllMenuItem extends React.Component {
                                 }} >
                                     <View style={{ backgroundColor: '#fceef8', }}>
                                         <View style={{ flexDirection: 'row' }}>
-                                            <Image source={require('../../assets/images/profile.png')} style={{ width: 50, height: 50, alignSelf: 'center', marginTop: 5, resizeMode: 'stretch', borderRadius: 100 }} />
+                                            <Image source={{uri :item.userPhoto}} style={{ width: 50, height: 50, alignSelf: 'center', marginTop: 5, borderRadius: 100 }} />
                                             <View>
-                                                <Text style={{ fontWeight: 'bold', fontSize: 18, marginLeft: 4 }}>Name {item.item_Name}</Text>
+                                                <Text style={{ fontWeight: 'bold', fontSize: 18, marginLeft: 4 }}>{item.userName}</Text>
                                                 <Text style={{ fontSize: 15, marginLeft: 4 }}>{item.userEmail}</Text>
+                                                <Text style={{ fontSize: 12, marginLeft: 4 ,color:'#82838e' }}>{item.post_date}</Text>
+
                                             </View>
                                         </View>
                                         <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>{item.item_description}</Text>
-
                                         <Image source={{ uri: item.item_Image }} style={{ width: 300, height: 300, alignSelf: 'center', marginTop: 5, resizeMode: 'stretch' }} />
-
                                         <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>video: {item.item_video}</Text>
 
                                     </View>
                                 </TouchableOpacity>
-                            </Swipeout >
+                            </Swipeout > */}
 
                         </View>
                     )}
@@ -239,7 +336,8 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    email: state.auth.email
+    email: state.auth.email,
+    photoUri: state.auth.photoUri
 
 })
 

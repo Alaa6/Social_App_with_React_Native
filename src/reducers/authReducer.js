@@ -4,6 +4,7 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
+    uid :'',
     email: '',
     password: '',
     fName: '',
@@ -34,7 +35,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state, processing: false, success: true,
                 fName: action.fName, lName: action.lName, photoUri: action.photoUri,
-                address: action.address, phone: action.phone , error: ''
+                address: action.address, phone: action.phone ,uid:action.uid , error: ''
             };
         case UPDATE_INFO:
             return { ...state, processing: false, user: action.payload };

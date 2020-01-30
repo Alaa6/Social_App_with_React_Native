@@ -10,6 +10,8 @@ import store from '../../store';
 import {connect ,Provider } from 'react-redux'
 import Realm from 'realm'
 import auth from '@react-native-firebase/auth';
+import { MenuProvider } from 'react-native-popup-menu';
+
 import database from '@react-native-firebase/database';
 
 
@@ -35,20 +37,21 @@ let realm ;
 
     realm = new Realm({
       path: 'SocialDB.realm',
-      schemaVersion: 2 ,
+      schemaVersion: 6 ,
       schema: [
         {
           name: 'Item_Details',
-        
           properties: {
+            userId : { type: 'string' },
             userName : {type : 'string' ,indexed:true ,default :false} ,
             userPhoto :'string' ,
             userEmail: {type : 'string' ,indexed:true ,default :false} ,
-            post_id: { type: 'int', default: 0 },
+
+            post_id    : { type: 'int', default: 0 },
             item_video :{type : 'string' ,indexed:true ,default :false},
-            item_Image:'string' ,
-            item_description :{type : 'string' ,indexed:true ,default :false}
-            
+            item_Image :'string' ,
+            item_description :{type : 'string' ,indexed:true ,default :false} ,
+            post_date : 'string' 
           },
         },
       ],
@@ -87,8 +90,11 @@ let realm ;
        <Header  title ='Home' color='#FFF' backgroundColor='#3b3c4e'  showMenu componentId={this.props.componentId }  />
        
        <View style ={{width :width , height :width*1.75 , justifyContent:'flex-end'}}>
-       
-       <AllMenuItems/>
+       <MenuProvider>
+       <AllMenuItems />
+
+       </MenuProvider>
+      
       
        <View style={styles.addView}>
        <MaterialIcons

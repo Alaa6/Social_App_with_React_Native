@@ -4,13 +4,13 @@ import Icon3 from 'react-native-vector-icons/Feather';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/AntDesign';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import { StyleSheet , View, Text,TouchableOpacity, Image, Alert, ScrollView, Dimensions  } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Image, Alert, ScrollView, Dimensions } from 'react-native';
 import { Navigation } from 'react-native-navigation';
 import ImagePicker from 'react-native-image-picker';
 import Header from '../../Components/header';
 import Realm from 'realm';
 import Home from '../Home/Home'
-import { Provider  ,connect} from 'react-redux';
+import { Provider, connect } from 'react-redux';
 import { Input } from 'react-native-elements';
 import MyButton from '../../Components/MyButton';
 import store from '../../store';
@@ -21,7 +21,7 @@ import store from '../../store';
 
 Navigation.registerComponent('Home', () => (props) => (
     <Provider store={store}>
-            <Home {...props} />
+        <Home {...props} />
     </Provider>
 ), () => Home);
 
@@ -35,20 +35,37 @@ class AddItem extends Component {
         super(props);
 
         this.state = {
-            photo: null,
+            photo: '',
             Item_Name: '',
-            Item_Video: '' ,
-            UserName :'',
-            UserPhoto :'',
-            Item_description :''
+            Item_Video: '',
+            UserName: '',
+            UserPhoto: '',
+            Item_description: '',
+            date: 'hhh',
 
         };
+       
 
-        realm = new Realm({ path: 'SocialDB.realm' ,schemaVersion:2});
+        realm = new Realm({ path: 'SocialDB.realm', schemaVersion: 6 });
     }
 
-     goToHome=()=> {
-        Navigation.push( this.props.componentId ,{
+    componentDidMount() {
+        var that = this;
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+        that.setState({
+            //Setting the value of the date time
+            date:
+           
+                hours + ':' + min + ':' + sec,
+        });
+       
+        
+    }
+
+    goToHome = () => {
+        Navigation.push(this.props.componentId, {
             component: {
                 id: 'addItemId',
                 name: 'AddItem',
@@ -59,74 +76,7 @@ class AddItem extends Component {
         });
     }
 
-    SaveData = () => {
-        var that = this;
-        const { photo } = this.state;
-        const { Item_Name } = this.state;
-        const { Item_Video } = this.state;
-        const  {Item_description} = this.state;
-        const  {UserPhoto} = this.state;
-        const  {UserName} = this.state;
-
-
-
-        if (photo) {
-          
-                if (Item_Video) {
-                    realm.write(() => {
-                        var ID =
-                            realm.objects('Item_Details').sorted('post_id', true).length > 0
-                                ? realm.objects('Item_Details').sorted('post_id', true)[0]
-                                    .post_id + 1
-                                : 1;
-                        realm.create('Item_Details', {
-                            post_id: ID,
-                            item_Name: Item_Name,
-                            item_Image: photo.uri,
-                            item_video: Item_Video ,
-                            item_description :Item_description ,
-                            userPhoto : UserPhoto,
-                            userName : UserName ,
-                            userEmail :this.props.email
-
-                        });
-
-                        Alert.alert(
-                            'Success',
-                            'Item is saved successfully',
-                            [
-                                {
-                                    text: 'Ok',
-                                    onPress: ()=>{
-                                            Navigation.push( 'addItemId' ,{
-                                                component: {
-                                                    id: 'homeId',
-                                                    name: 'Home',
-                                                    passProps: {
-                                                        title: 'Home'
-                                                    }
-                                                }
-                                            });
-                                    },
-                                },
-                            ],
-                            { cancelable: false }
-                        );
-                    });
-
-
-                } else {
-                    alert('Please enter item video');
-
-                }
-
-        } else {
-            alert('Please Add item image');
-        }
-    };
-
-
-
+   
 
     handleImagePicker = () => {
         const options = {  //options
@@ -135,7 +85,7 @@ class AddItem extends Component {
         ImagePicker.launchImageLibrary(options, response => {
             console.log('resposns' + response);
             if (response.uri) {
-                this.setState({ photo: response });
+                this.setState({ photo: response.uri });
             }
         });
 
@@ -161,22 +111,106 @@ class AddItem extends Component {
         });
     };
 
+     SaveData = () => {
+        var that = this;
+        const { photo } = this.state;
+        const { Item_Name } = this.state;
+        const { Item_Video } = this.state;
+        const { Item_description } = this.state;
+        const { UserPhoto } = this.state;
+        const { UserName } = this.state;
+        const { date} = this.state ;
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+
+    //     this.setState({
+    //         //Setting the value of the date time
+    //         date:
+           
+    //         date + '/'+hours + ':' + min + ':' + sec,
+    //     });
+
+    //    console.log('date                '+hours);
+
+
+
+        if (photo) {
+            if (Item_Video) {
+                realm.write(() => {
+                    var ID =
+                        realm.objects('Item_Details').sorted('post_id', true).length > 0
+                            ? realm.objects('Item_Details').sorted('post_id', true)[0]
+                                .post_id + 1
+                            : 1;
+                    realm.create('Item_Details', {
+                        post_id: ID,
+                        userId :this.props.uid ,
+                        item_Image: photo,
+                        item_video: Item_Video,
+                        item_description: Item_description,
+                        userPhoto: this.props.photoUri,
+                        userName: this.props.fName,
+                        userEmail: this.props.email ,
+                        post_date :date
+
+                    });
+
+                    Alert.alert(
+                        'Success',
+                        'Item is saved successfully',
+                        [
+                            {
+                                text: 'Ok',
+                                onPress: () => {
+                                    Navigation.push('addItemId', {
+                                        component: {
+                                            id: 'homeId',
+                                            name: 'Home',
+                                            passProps: {
+                                                title: 'Home'
+                                            }
+                                        }
+                                    });
+                                },
+                            },
+                        ],
+                        { cancelable: false }
+                    );
+                });
+
+
+            } else {
+                alert('Please enter item video');
+
+            }
+
+        } else {
+            alert('Please Add item image');
+        }
+    };
+
+
+
+
 
 
 
 
 
     render() {
-        const { photo } = this.state;
-        console.log(this.props.componentId );
+     
+        console.log('jjjjj          '+this.props.uid);
         
+        
+        const { photo } = this.state;
         return (
             <View style={styles.container}>
-                <Header title='Add post'  color='#FFF' backgroundColor='#3b3c4e' showBack showMenu  componentId={this.props.componentId } />
+                <Header title='Add post' color='#FFF' backgroundColor='#3b3c4e' showBack showMenu componentId={this.props.componentId} />
 
-                <ScrollView style={{ flex: 1 }} contentContainerStyle={{ justifyContent: 'center', marginTop :5 ,}}>
-                    {photo ? <Image source={{ uri: photo.uri }} style={{ width: 300, height: 300, alignSelf: 'center' ,resizeMode:'stretch' }} />
-                        : <Image source={require('../../assets/images/noImage.png')} style={{ width: 300, height: 300, alignSelf: 'center',resizeMode:'stretch' }} />
+                <ScrollView style={{ flex: 1 }} contentContainerStyle={{ justifyContent: 'center', marginTop: 5, }}>
+                    {photo ? <Image source={{ uri: photo }} style={{ width: 300, height: 300, alignSelf: 'center', resizeMode: 'stretch' }} />
+                        : <Image source={require('../../assets/images/noImage.png')} style={{ width: 300, height: 300, alignSelf: 'center', resizeMode: 'stretch' }} />
                     }
 
                     <View style={{
@@ -184,7 +218,7 @@ class AddItem extends Component {
                     }}>
 
                         <TouchableOpacity style={styles.ubloadPhoto} onPress={this.handleImagePicker} >
-                          
+
                             <FontAwesome
                                 style={styles.menuIconStyle}
                                 name='photo'
@@ -207,11 +241,11 @@ class AddItem extends Component {
                     </View>
 
 
-                    
+
                     <Input
                         containerStyle={styles.textInputStyle}
                         placeholder='Please enter item Video'
-                        onChangeText={(Item_Video) => this.setState({ Item_Video})}
+                        onChangeText={(Item_Video) => this.setState({ Item_Video })}
                         placeholderTextColor='white'
                         inputStyle={
                             { color: 'white' }
@@ -219,9 +253,9 @@ class AddItem extends Component {
                         inputContainerStyle={
                             { borderBottomWidth: 0 }
                         }
-    
+
                         name='userName' />
-                        <Input
+                    <Input
                         containerStyle={styles.textAreaStyle}
                         placeholder='Enter post here ..'
                         onChangeText={(Item_description) => this.setState({ Item_description })}
@@ -232,7 +266,7 @@ class AddItem extends Component {
                         inputContainerStyle={
                             { borderBottomWidth: 0 }
                         }
-                        
+
                         name='Description' />
 
 
@@ -257,7 +291,7 @@ const styles = StyleSheet.create({
 
 
     },
-   
+
 
     text: {
         fontSize: 25,
@@ -303,7 +337,7 @@ const styles = StyleSheet.create({
 
 
     },
-    textAreaStyle :{
+    textAreaStyle: {
 
         width: width / 1.1,
         height: width / 2,
@@ -324,8 +358,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    email : state.auth.email
-    
+    email: state.auth.email,
+    fName: state.auth.fName,
+    lName: state.auth.lName,
+    photoUri: state.auth.photoUri,
+    address: state.auth.address,
+    uid :state.auth.uid
+
+
 })
 
 export default connect(mapStateToProps)(AddItem);

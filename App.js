@@ -23,7 +23,7 @@ class App extends Component {
 
     return (
         <Provider store={store}>
-          <WelcomeScreen componentId ='appId' />
+             <WelcomeScreen componentId ='appId' />
        </Provider>
 
     

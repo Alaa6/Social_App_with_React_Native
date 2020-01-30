@@ -33,7 +33,6 @@ export const loginRequest = (email , password ,remeber, shouldLogin) => async (d
 
     // Get the users ID
   const uid = auth().currentUser.uid;
-
   // Create a reference
   const ref = database().ref(`/users/${uid}`);
 
@@ -45,7 +44,8 @@ export const loginRequest = (email , password ,remeber, shouldLogin) => async (d
   const  address= snapshot.child('address').val();
   const  phone= snapshot.child('phone').val();
 
-  saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone);
+
+  saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone ,uid);
 
 
   // axios.post(`${API_ENDPOINT}/signin`, values, {
@@ -127,7 +127,7 @@ const onLoginFailed =(dispatch ,errorMessage)=>{
 
 }
 
-const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone)=>{
+const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone ,uid)=>{
 
   dispatch ({
     type :GET_USER_DATA ,
@@ -135,7 +135,8 @@ const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone)=>{
     lName:lName,
     photoUri:photoUri,
     address:address ,
-    phone :phone
+    phone :phone ,
+    uid :uid 
 
 })
  

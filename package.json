@@ -22,6 +22,7 @@
     "react-native-i18n": "^2.0.15",
     "react-native-image-picker": "^2.2.0",
     "react-native-navigation": "^3.5.1",
+    "react-native-popup-menu": "^0.15.6",
     "react-native-progress-steps": "^1.2.8",
     "react-native-splash-screen": "^3.2.0",
     "react-native-swipeout": "^2.3.6",
