@@ -11,6 +11,7 @@ const INITIAL_STATE = {
     lName: '',
     photoUri: '',
     address: '',
+    country :'',
     phone :'' ,
     error: '',
     userType: 'INFLUENCER', ordersCounts: {}, success: false, token: '', processing: false, order: null
@@ -35,7 +36,7 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state, processing: false, success: true,
                 fName: action.fName, lName: action.lName, photoUri: action.photoUri,
-                address: action.address, phone: action.phone ,uid:action.uid , error: ''
+                address: action.address, phone: action.phone ,uid:action.uid ,country:action.country , error: ''
             };
         case UPDATE_INFO:
             return { ...state, processing: false, user: action.payload };

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Dimensions, Keyboard } from 'react-native';
+import { Text, StyleSheet, Dimensions, Keyboard, ActivityIndicator } from 'react-native';
 import { View } from 'native-base';
 import MyButton from '../../Components/MyButton'
 import { Input } from 'react-native-elements';
@@ -13,11 +13,13 @@ import { connect, Provider } from 'react-redux'
 import store from '../../store';
 import { loginRequest } from '../../actions/auth';
 
+import Styles from './styles'
+
 /*Firebase */
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
 
-
+const { width } = Dimensions.get('window');
 
 
 Navigation.registerComponent('RegisterSteps', () => (props) => (
@@ -40,8 +42,8 @@ Navigation.registerComponent('Home', () => (props) => (
 
 function goToHomeScreen(email) {
 
-   // console.log("go to home screen" + componentId);
-    
+    // console.log("go to home screen" + componentId);
+
 
     Navigation.showModal({
 
@@ -86,17 +88,20 @@ function goToHomeScreen(email) {
 
 }
 
-async function login(email, password ) {
-  
+async function login(email, password) {
+
     try {
         await auth().signInWithEmailAndPassword(email, password);
-        goToHomeScreen(email)
+       
+      
+
+
     } catch (e) {
         alert(e.message)
     }
 }
 
-const { width } = Dimensions.get('window');
+
 
 
 class Login extends ValidationComponent {
@@ -105,22 +110,46 @@ class Login extends ValidationComponent {
     constructor(props) {
         super(props);
         this.state = {
-            user: {
-                email: '',
-                password: ''
-            }
+     
+            email: '',
+            password: '',
+            isLoading: false
 
 
         }
     }
 
-    
+
 
     userLogin = () => {
-        login(this.state.email, this.state.password) ;
-        this.props.loginRequest(this.state.email, this.state.password);
-        Keyboard.dismiss();
+
+        if (this.state.email) {
+            if (this.state.password) {
+
+                this.setState({ isLoading: true })
+                login(this.state.email, this.state.password);
+                this.props.loginRequest(this.state.email, this.state.password)
+               
+                Keyboard.dismiss();
+                goToHomeScreen(this.state.email)
+    
+
+            }
+            else{
+                alert('please enter your password')
+
+            }
+           
+        }
+        else {
+            alert('please enter your email')
+        }
+
+
+
+
     }
+
 
 
     EmailValidation(email) {
@@ -131,39 +160,41 @@ class Login extends ValidationComponent {
             //date: { date: 'YYYY-MM-DD' }
         });
 
-        this.setState({  email});
+        this.setState({ email });
     }
 
     PasswordValidation(password) {
         this.validate({
+
             ////name: { minlength: 3, maxlength: 7, required: true },
-            password: { minlength: 7, required: true },
+            password: { minlength: 5, required: true },
             //number: { numbers: true },
             //date: { date: 'YYYY-MM-DD' }
         });
+
 
         this.setState({ password });
     }
 
 
     render() {
-     
-       
-        console.log("render  login  "   + this.props.componentId);
 
 
-        const goToRegisterScreen =()=> {
-            Navigation.push( this.props.componentId ,{
+        console.log("render  login  " + this.props.componentId);
+
+
+        const goToRegisterScreen = () => {
+            Navigation.push(this.props.componentId, {
                 component: {
                     id: 'registerStepsId',
                     name: 'RegisterSteps',
                     passProps: {
-                        
+
                     }
                 }
             });
         }
-    
+
         return (
             <View style={styles.container}>
                 <View style={styles.BeViewStyle}>
@@ -227,10 +258,18 @@ class Login extends ValidationComponent {
                     />
 
                 </View>
-                <MyButton title="Log in" customClick={this.userLogin } ></MyButton>
+                {this.state.isLoading ?
+
+                    <View style={Styles.activity}>
+                        <ActivityIndicator size="small" color="#3b3c4e" />
+                    </View>
+                    : <MyButton title="Log in" customClick={this.userLogin}  btnWidth={width/1.1}></MyButton>
 
 
-                <Text style={styles.TxtStyle} onPress={goToRegisterScreen}>{'Sign Up'}</Text>
+                }
+
+
+                <Text style={styles.TxtStyle} onPress={goToRegisterScreen} >{'Sign Up'}</Text>
 
             </View>
         );
@@ -303,7 +342,7 @@ const styles = StyleSheet.create({
     },
     ButtonView: {
         justifyContent: 'flex-end',
-       
+
 
 
 

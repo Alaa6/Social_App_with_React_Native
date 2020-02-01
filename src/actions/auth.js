@@ -43,9 +43,10 @@ export const loginRequest = (email , password ,remeber, shouldLogin) => async (d
   const  photoUri= snapshot.child('photo').val();
   const  address= snapshot.child('address').val();
   const  phone= snapshot.child('phone').val();
+  const  country = snapshot.child('selectedCountry').val();
 
 
-  saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone ,uid);
+  saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone ,uid ,country);
 
 
   // axios.post(`${API_ENDPOINT}/signin`, values, {
@@ -127,7 +128,7 @@ const onLoginFailed =(dispatch ,errorMessage)=>{
 
 }
 
-const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone ,uid)=>{
+const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone ,uid ,country)=>{
 
   dispatch ({
     type :GET_USER_DATA ,
@@ -136,7 +137,8 @@ const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone ,uid)=>{
     photoUri:photoUri,
     address:address ,
     phone :phone ,
-    uid :uid 
+    uid :uid  ,
+    country:country
 
 })
  

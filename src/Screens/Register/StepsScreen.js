@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, Dimensions, ScrollView, TouchableOpacity, Image, ToastAndroid } from 'react-native';
-import { View, Picker , Header, Button ,Title} from 'native-base';
+import { View, Picker, Header, Button, Title } from 'native-base';
 import { Navigation } from 'react-native-navigation'
 import store from '../../store';
 import { connect, Provider } from 'react-redux'
@@ -11,21 +11,16 @@ import MyButton from '../../Components/MyButton'
 import ImagePicker from 'react-native-image-picker';
 import Login from '../Login/Login';
 import Styles from './styles'
-
-
 /*Firebase */
 import auth from '@react-native-firebase/auth';
 import database from '@react-native-firebase/database';
-
 /* icons */
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ant from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
 /*form  */
 import ValidationSchema from './validation'
-
 import { Formik } from "formik";
 import {
   //handleTextInput,
@@ -46,19 +41,20 @@ Navigation.registerComponent('Login', () => (props) => (
   </Provider>
 ), () => Login);
 
+
 async function register(email, password) {
 
   try {
     await auth().createUserWithEmailAndPassword(email, password);
   } catch (e) {
     console.error(e.message);
-    
+
   }
 }
 
 
 
-async function saveUserData(email, firstName, lastName, address, photo, phone ,selectedCountry) {
+async function saveUserData(email, firstName, lastName, address, photo, phone, selectedCountry) {
   const uid = auth().currentUser.uid;
 
   const ref = database().ref(`/users/${uid}`);
@@ -70,7 +66,7 @@ async function saveUserData(email, firstName, lastName, address, photo, phone ,s
     lastName,
     address,
     photo,
-    phone ,
+    phone,
     selectedCountry
 
   });
@@ -96,8 +92,8 @@ class RegisterSteps extends ValidationComponent {
       selectedCountry: 'Choose Your city',
       results: {
         items: []
-      } ,
-      countries :[] ,
+      },
+      countries: [],
     }
   }
 
@@ -146,43 +142,44 @@ class RegisterSteps extends ValidationComponent {
     });
   }
 
-  componentWillMount(){
+  componentWillMount() {
     this.getDataList();
- }
+  }
 
- getDataList (){
+  getDataList() {
     var that = this;
-    var url = `https://restcountries.eu/rest/v2/all` ;
-    console.log("-----------url:"+url);
+    var url = `https://restcountries.eu/rest/v2/all`;
+    console.log("-----------url:" + url);
 
-    fetch(url ,{method :'Get'})
-    .then(function(response){ 
-        return response.json();})
+    fetch(url, { method: 'Get' })
+      .then(function (response) {
+        return response.json();
+      })
 
-    .then(function(result){
-       that.setState({countries : result })
-        console.log(result);
+      .then(function (result) {
+        that.setState({ countries: result })
 
-     })
-     .catch(function(error){
-         console.log("-------- error ------- "+error);
-         alert('result :'+ error);
-     });
+      })
+      .catch(function (error) {
+        console.log("-------- error ------- " + error);
+        alert('result :' + error);
+      });
 
 
-}
+  }
 
-countryList = () => {
-  return( this.state.countries.map( (x,i) => { 
-    return( <Item label={x.name} key={i} value={x.name}  />)} ));
+  countryList = () => {
+    return (this.state.countries.map((x, i) => {
+      return (<Item label={x.name} key={i} value={x.name} />)
+    }));
 
-}
+  }
 
 
 
   render() {
 
-    const { email, firstName, lastName, address, photo, showCreateBtn, phone ,selectedCountry } = this.state;
+    const { email, firstName, lastName, address, photo, showCreateBtn, phone, selectedCountry } = this.state;
 
 
 
@@ -190,6 +187,7 @@ countryList = () => {
 
       register(values.email, values.password);
       this.setState({ nextBtn: true, showCreateBtn: false })
+      Keyboard.dismiss();
 
     }
 
@@ -217,8 +215,9 @@ countryList = () => {
         if (lastName) {
           if (address) {
 
-            saveUserData(email, firstName, lastName, address, photo, phone ,selectedCountry);
+            saveUserData(email, firstName, lastName, address, photo, phone, selectedCountry);
             ToastAndroid.show(' your registration is done successfully ^^', ToastAndroid.LONG);
+            Keyboard.dismiss();
             goToLoginScreen();
 
           }
@@ -252,7 +251,7 @@ countryList = () => {
       <View style={Styles.container}>
 
         <ProgressSteps labelColor="#9899a2" activeLabelColor="#3b3c4e" activeStepNumColor="#3b3c4e" completedStepIconColor="#3b3c4e" activeStepIconBorderColor="#3b3c4e" completedProgressBarColor="#3b3c4e">
-          <ProgressStep label="Register" nextBtnStyle={Styles.btnStyle} nextBtnText={this.state.nextBtn ? 'التالي' : null} nextBtnTextStyle={{ color: '#3b3c4e' }} >
+          <ProgressStep label="Register" nextBtnStyle={Styles.btnStyle} nextBtnText={this.state.nextBtn ? 'Next' : null} nextBtnTextStyle={{ color: '#3b3c4e' }} >
             <View style={Styles.container}>
               <ScrollView style={{ flex: 1 }}>
 
@@ -269,7 +268,7 @@ countryList = () => {
                     return (
 
                       <Form style={Styles.InputView}>
-                        {console.log(props.values)}
+
                         {props.errors.email ? <Text style={{ color: 'red', marginLeft: 10 }}>{props.errors.email}</Text> : null}
                         <Input
                           name="email"
@@ -347,6 +346,12 @@ countryList = () => {
                             />
                           }
                         />
+                        {/* 
+{props.isSubmitting ? (
+            <ActivityIndicator />
+          ) : (
+            <Button title="Submit" onPress={props.handleSubmit} />
+          )} */}
 
 
 
@@ -368,7 +373,7 @@ countryList = () => {
 
 
           </ProgressStep>
-          <ProgressStep label="User Information" nextBtnStyle={Styles.btnStyle2} nextBtnText='التالي' nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText='السابق' previousBtnStyle={Styles.btnStyle1} previousBtnTextStyle={{ color: '#3b3c4e' }} onSubmit={saveData}>
+          <ProgressStep label="User Information" nextBtnStyle={Styles.btnStyle2} nextBtnText='Next' nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText='السابق' previousBtnStyle={Styles.btnStyle1} previousBtnTextStyle={{ color: '#3b3c4e' }} onSubmit={saveData}>
             <View style={Styles.container}>
 
 
@@ -504,7 +509,7 @@ countryList = () => {
                     onValueChange={this.onValueChange.bind(this)}>
                     <Item label='Choose Your city' value='Choose Your city' />
                     {this.countryList()}
-                 
+
                   </Picker>
                 </View>
 
