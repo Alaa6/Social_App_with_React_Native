@@ -98,9 +98,8 @@ class ViewAllMenuItem extends React.Component {
 
 
     render() {
-        console.log('comans        '+this.props.componentId);
         
-
+    
         const pushHomeScreen = () => {
             Navigation.push('homeId',{
                 component: {
@@ -125,7 +124,10 @@ class ViewAllMenuItem extends React.Component {
                     ItemSeparatorComponent={this.ListViewItemSeparator}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
+                        
                         <View style={{ backgroundColor: 'white', padding: 20 }}>
+                            {console.log('sa7b l post     '+ item.userId)}
+                            {console.log('eli 3aml login    '+ uid)}
                             
                         { <Menu ref={ref => (this.menu = ref)}>
                             <MenuTrigger text='' />

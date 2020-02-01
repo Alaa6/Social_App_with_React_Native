@@ -9,11 +9,12 @@ import Icon3 from 'react-native-vector-icons/MaterialCommunityIcons';
 import { connect } from 'react-redux';
 import store from '../store';
 import { Provider } from 'react-redux';
-import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image } from 'react-native';
+import { StyleSheet, View, Text, Dimensions, TouchableWithoutFeedback, Image, TouchableOpacity } from 'react-native';
 import Home from '../Screens/Home/Home'
 import AddItem from '../Screens/Item/AddPost'
 import Login from '../Screens/Login/Login'
 import Profile from '../Screens/Profile/profile'
+import Friends from '../Screens/Friends/Friends'
 
 const { width } = Dimensions.get('window');
 
@@ -39,6 +40,12 @@ Navigation.registerComponent('Profile', () => (props) => (
     </Provider>
 ), () => Profile);
 
+Navigation.registerComponent('Friends', () => (props) => (
+    <Provider store={store}>
+        <Friends {...props} />
+    </Provider>
+), () => Friends);
+
 
 
 
@@ -54,17 +61,18 @@ class SideMenu extends Component {
 
     }
 
-  
 
 
-    
+
+
 
 
 
     render() {
-        const {photo} =this.state ; 
+        const { photo } = this.state;
+
         const goToLogin = () => {
-            console.log("aaaa");
+
             Navigation.push('homeId', {
                 component: {
                     id: 'loginId',
@@ -132,7 +140,7 @@ class SideMenu extends Component {
 
         }
 
-        const goToProfile= () => {
+        const goToProfile = () => {
 
             Navigation.push('homeId', {
                 component: {
@@ -140,6 +148,28 @@ class SideMenu extends Component {
                     name: 'Profile',
                     passProps: {
                         title: 'My Profile'
+                    }
+                }
+            });
+
+            Navigation.mergeOptions('homeId', {
+                sideMenu: {
+                    left: {
+                        visible: false,
+
+                    },
+                },
+            });
+
+        }
+        const goToFriends = () => {
+
+            Navigation.push('homeId', {
+                component: {
+                    id: 'friendsId',
+                    name: 'Friends',
+                    passProps: {
+                        title: 'search for Friends'
                     }
                 }
             });
@@ -163,12 +193,12 @@ class SideMenu extends Component {
         return (
             <View style={styles.container}>
                 <View style={styles.header}>
-                   {!photo? <Image source={require('../assets/images/profile.png')} style={styles.imageHeader} />
+                    {!photo ? <Image source={require('../assets/images/profile.png')} style={styles.imageHeader} />
 
-                      : <Image source ={{uri : this.props.photoUri}} style ={styles.imageHeader}/> }
+                        : <Image source={{ uri: this.props.photoUri }} style={styles.imageHeader} />}
 
                     <Text style={styles.textHeader} >
-                        {this.props.fName +' ' +this.props.lName}
+                        {this.props.fName + ' ' + this.props.lName}
                     </Text>
                 </View>
 
@@ -195,17 +225,21 @@ class SideMenu extends Component {
                         onPress={goToProfile}>{"My profile"}</Text>
 
                 </View>
-                <View style={styles.MenuItems}>
 
-                    <FontAwesome5
-                        style={styles.Icons}
-                        name='users'
-                        size={25}
-                        color='#3b3c4e' />
-                    <Text style={styles.ItemsText}
-                        onPress={goToHome}>{"My friends"}</Text>
+                <TouchableOpacity onPress={goToFriends}>
+                    <View style={styles.MenuItems} >
 
-                </View>
+                        <FontAwesome5
+                            style={styles.Icons}
+                            name='users'
+                            size={25}
+                            color='#3b3c4e' />
+                        <Text style={styles.ItemsText} >{"Search for friends"}</Text>
+
+                    </View>
+
+                </TouchableOpacity>
+
 
                 <View style={styles.MenuItems}>
 
@@ -218,7 +252,7 @@ class SideMenu extends Component {
 
                 </View>
 
-              
+
                 <TouchableWithoutFeedback >
                     <View style={styles.LogoutItem}  >
                         <Icon3
@@ -309,8 +343,8 @@ const styles = StyleSheet.create({
     logoutText: {
         color: 'rgba(255,99,71,0.7) ',
         fontSize: 25,
-        paddingTop: 7 ,
-    
+        paddingTop: 7,
+
 
     }
 
@@ -321,13 +355,13 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => ({
     email: state.auth.email,
-    fName : state.auth.fName ,
-    lName : state.auth.lName ,
-    photoUri : state.auth.photoUri ,
-    address : state.auth.address ,
+    fName: state.auth.fName,
+    lName: state.auth.lName,
+    photoUri: state.auth.photoUri,
+    address: state.auth.address,
 
 
-    
+
 
 })
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Image, ToastAndroid } from 'react-native';
-import { View } from 'native-base';
+import { Text, Dimensions, ScrollView, TouchableOpacity, Image, ToastAndroid } from 'react-native';
+import { View, Picker , Header, Button ,Title} from 'native-base';
 import { Navigation } from 'react-native-navigation'
 import store from '../../store';
 import { connect, Provider } from 'react-redux'
@@ -10,6 +10,7 @@ import { Input } from 'react-native-elements';
 import MyButton from '../../Components/MyButton'
 import ImagePicker from 'react-native-image-picker';
 import Login from '../Login/Login';
+import Styles from './styles'
 
 
 /*Firebase */
@@ -22,9 +23,22 @@ import Ant from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
+/*form  */
+import ValidationSchema from './validation'
+
+import { Formik } from "formik";
+import {
+  //handleTextInput,
+  withNextInputAutoFocusForm,
+  // withNextInputAutoFocusInput
+} from "react-native-formik";
 
 
+
+
+const Form = withNextInputAutoFocusForm(View);
 const { width } = Dimensions.get('window');
+const Item = Picker.Item;
 
 Navigation.registerComponent('Login', () => (props) => (
   <Provider store={store}>
@@ -38,13 +52,13 @@ async function register(email, password) {
     await auth().createUserWithEmailAndPassword(email, password);
   } catch (e) {
     console.error(e.message);
-    //alert(e)
+    
   }
 }
 
 
 
-async function saveUserData(email, firstName, lastName, address, photo ,phone) {
+async function saveUserData(email, firstName, lastName, address, photo, phone ,selectedCountry) {
   const uid = auth().currentUser.uid;
 
   const ref = database().ref(`/users/${uid}`);
@@ -55,13 +69,12 @@ async function saveUserData(email, firstName, lastName, address, photo ,phone) {
     firstName,
     lastName,
     address,
-    photo ,
-    phone
+    photo,
+    phone ,
+    selectedCountry
 
   });
 }
-
-
 
 
 class RegisterSteps extends ValidationComponent {
@@ -71,41 +84,25 @@ class RegisterSteps extends ValidationComponent {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      password: '',
       firstName: '',
       lastName: '',
       address: '',
-      confPassword: '',
       photo: '',
       nextBtn: false,
-      showCreateBtn: true ,
-      phone :''
+      showCreateBtn: true,
+      phone: '',
+      /*  picker */
+      selectedItem: undefined,
+      selectedCountry: 'Choose Your city',
+      results: {
+        items: []
+      } ,
+      countries :[] ,
     }
   }
 
-  EmailValidation(email) {
 
-    this.validate({
-      ////name: { minlength: 3, maxlength: 7, required: true },
-      email: { email: true, required: true },
-      //number: { numbers: true },
-      //date: { date: 'YYYY-MM-DD' }
-    });
 
-    this.setState({ email });
-  }
-
-  PasswordValidation(password) {
-    this.validate({
-      ////name: { minlength: 3, maxlength: 7, required: true },
-      password: { minlength: 6, required: true },
-      //number: { numbers: true },
-      //date: { date: 'YYYY-MM-DD' }
-    });
-
-    this.setState({ password });
-  }
 
   handleImagePicker = () => {
     const options = {  //options
@@ -141,42 +138,61 @@ class RegisterSteps extends ValidationComponent {
   };
 
 
+  /* picker */
 
+  onValueChange(value) {
+    this.setState({
+      selectedCountry: value
+    });
+  }
+
+  componentWillMount(){
+    this.getDataList();
+ }
+
+ getDataList (){
+    var that = this;
+    var url = `https://restcountries.eu/rest/v2/all` ;
+    console.log("-----------url:"+url);
+
+    fetch(url ,{method :'Get'})
+    .then(function(response){ 
+        return response.json();})
+
+    .then(function(result){
+       that.setState({countries : result })
+        console.log(result);
+
+     })
+     .catch(function(error){
+         console.log("-------- error ------- "+error);
+         alert('result :'+ error);
+     });
+
+
+}
+
+countryList = () => {
+  return( this.state.countries.map( (x,i) => { 
+    return( <Item label={x.name} key={i} value={x.name}  />)} ));
+
+}
 
 
 
   render() {
 
-    const { email, password, firstName, lastName, address, confPassword, photo, showCreateBtn ,phone} = this.state;
-    console.log('sss' + photo.uri);
-
-
-    const RegisterUser = () => {
-
-      if (email) {
-        if (password && password.length >= 6) {
-          if (password === confPassword) {
-
-            register(this.state.email.trim(), this.state.password);
-            this.setState({ nextBtn: true, showCreateBtn: false })
-
-
-          }
-          else {
-            alert('please confirm your password to complete this registration ! ')
-          }
-        }
-        else {
-          alert('your password is empty or less than 6 characters ! ')
-        }
-      }
+    const { email, firstName, lastName, address, photo, showCreateBtn, phone ,selectedCountry } = this.state;
 
 
 
-      else {
-        alert('Your email is empty or invaild email ')
-      }
+    const RegisterUser = (values) => {
+
+      register(values.email, values.password);
+      this.setState({ nextBtn: true, showCreateBtn: false })
+
     }
+
 
     const goToLoginScreen = () => {
 
@@ -194,13 +210,14 @@ class RegisterSteps extends ValidationComponent {
     }
 
 
+
     const saveData = () => {
 
       if (firstName) {
         if (lastName) {
           if (address) {
 
-            saveUserData(email, firstName, lastName, address,  photo ,phone);
+            saveUserData(email, firstName, lastName, address, photo, phone ,selectedCountry);
             ToastAndroid.show(' your registration is done successfully ^^', ToastAndroid.LONG);
             goToLoginScreen();
 
@@ -232,95 +249,117 @@ class RegisterSteps extends ValidationComponent {
 
 
     return (
-      <View style={styles.container}>
+      <View style={Styles.container}>
 
         <ProgressSteps labelColor="#9899a2" activeLabelColor="#3b3c4e" activeStepNumColor="#3b3c4e" completedStepIconColor="#3b3c4e" activeStepIconBorderColor="#3b3c4e" completedProgressBarColor="#3b3c4e">
-          <ProgressStep label="Register" nextBtnStyle={styles.btnStyle} nextBtnText={this.state.nextBtn ? 'التالي' : null} nextBtnTextStyle={{ color: '#3b3c4e' }} >
-            <View style={styles.container}>
+          <ProgressStep label="Register" nextBtnStyle={Styles.btnStyle} nextBtnText={this.state.nextBtn ? 'التالي' : null} nextBtnTextStyle={{ color: '#3b3c4e' }} >
+            <View style={Styles.container}>
               <ScrollView style={{ flex: 1 }}>
 
-                <Text style={{ color: 'red' }}> {this.getErrorMessages()}  </Text>
+                <Formik
+                  initialValues={{
+                    email: '',
+                    password: '',
+                    confPassword: '',
+                  }}
 
-                <View style={styles.InputView}>
-                  <Input
-                    containerStyle={{ marginTop: 8 }}
-                    autoCapitalize="none"
-                    placeholder='Gmail'
-                    onChangeText={(email) => this.EmailValidation(email)}
-                    placeholderTextColor='#9899a2'
-                    inputStyle={
-                      { color: '#9899a2' }
-                    }
-                    inputContainerStyle={
-                      {
-                        borderBottomWidth: 1
+                  onSubmit={values => RegisterUser(values)}
+                  validationSchema={ValidationSchema}
+                  render={props => {
+                    return (
 
-                      }
-                    }
-                    rightIcon={
-                      <MaterialIcons
-                        name='email'
-                        size={20}
-                        color='#9899a2'
+                      <Form style={Styles.InputView}>
+                        {console.log(props.values)}
+                        {props.errors.email ? <Text style={{ color: 'red', marginLeft: 10 }}>{props.errors.email}</Text> : null}
+                        <Input
+                          name="email"
+                          type="email"
+                          onChangeText={props.handleChange('email')}
+                          containerStyle={{ marginTop: 8 }}
+                          autoCapitalize="none"
+                          placeholder='Gmail'
+                          placeholderTextColor='#9899a2'
+                          inputStyle={
+                            { color: '#9899a2' }
+                          }
+                          inputContainerStyle={
+                            {
+                              borderBottomWidth: 1
 
-                      />
-                    }
-                  />
+                            }
+                          }
+                          rightIcon={
+                            <MaterialIcons
+                              name='email'
+                              size={20}
+                              color='#9899a2'
+
+                            />
+                          }
+                        />
+                        {props.errors.password ? <Text style={{ color: 'red', marginLeft: 10 }}>{props.errors.password}</Text> : null}
+                        <Input
+                          name="password"
+                          type="password"
+                          placeholder='Password'
+                          autoCapitalize="none"
+                          onChangeText={props.handleChange('password')}
+                          placeholderTextColor='#9899a2'
+                          inputStyle={
+                            { color: '#9899a2' }
+                          }
+                          inputContainerStyle={
+                            {
+                              borderBottomWidth: 0
+                            }
+                          }
+                          rightIcon={
+                            <MaterialIcons
+                              name='lock'
+                              size={25}
+                              color='#9899a2'
+
+                            />
+                          }
+                        />
+                        {props.errors.confPassword ? <Text style={{ color: 'red', marginLeft: 10 }}>{props.errors.confPassword}</Text> : null}
+
+                        <Input
+                          //name="confPassword"
+                          placeholder='Confirm password'
+                          autoCapitalize="none"
+                          onChangeText={props.handleChange('confPassword')}
+                          placeholderTextColor='#9899a2'
+                          inputStyle={
+                            { color: '#9899a2' }
+                          }
+                          inputContainerStyle={
+                            {
+                              borderBottomWidth: 0
+                            }
+                          }
+                          rightIcon={
+                            <MaterialIcons
+                              name='lock'
+                              size={25}
+                              color='#9899a2'
+
+                            />
+                          }
+                        />
 
 
 
-
-                  <Input
-                    ref="password"
-                    placeholder='Password'
-                    autoCapitalize="none"
-                    onChangeText={(password) => this.PasswordValidation(password)}
-                    placeholderTextColor='#9899a2'
-                    inputStyle={
-                      { color: '#9899a2' }
-                    }
-                    inputContainerStyle={
-                      {
-                        borderBottomWidth: 0
-                      }
-                    }
-                    rightIcon={
-                      <MaterialIcons
-                        name='lock'
-                        size={25}
-                        color='#9899a2'
-
-                      />
-                    }
-                  />
-
-                  <Input
-                    placeholder='Confirm password'
-                    autoCapitalize="none"
-                    onChangeText={(confPassword) => this.setState({ confPassword })}
-                    placeholderTextColor='#9899a2'
-                    inputStyle={
-                      { color: '#9899a2' }
-                    }
-                    inputContainerStyle={
-                      {
-                        borderBottomWidth: 0
-                      }
-                    }
-                    rightIcon={
-                      <MaterialIcons
-                        name='lock'
-                        size={25}
-                        color='#9899a2'
-
-                      />
-                    }
-                  />
+                        {showCreateBtn && <MyButton title="Greate a new account" customClick={props.handleSubmit} ></MyButton>}
 
 
-                </View>
+                      </Form>
+                    );
 
-                {showCreateBtn && <MyButton title="Greate a new account" customClick={RegisterUser} ></MyButton>}
+                  }}
+                />
+
+
               </ScrollView>
 
 
@@ -329,8 +368,8 @@ class RegisterSteps extends ValidationComponent {
 
 
           </ProgressStep>
-          <ProgressStep label="User Information" nextBtnStyle={styles.btnStyle2} nextBtnText='التالي' nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText='السابق' previousBtnStyle={styles.btnStyle1} previousBtnTextStyle={{ color: '#3b3c4e' }} onSubmit={saveData}>
-            <View style={styles.container}>
+          <ProgressStep label="User Information" nextBtnStyle={Styles.btnStyle2} nextBtnText='التالي' nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText='السابق' previousBtnStyle={Styles.btnStyle1} previousBtnTextStyle={{ color: '#3b3c4e' }} onSubmit={saveData}>
+            <View style={Styles.container}>
 
 
               <View style={{ alignSelf: 'center', marginTop: 10 }}>
@@ -348,16 +387,15 @@ class RegisterSteps extends ValidationComponent {
               </View>
 
 
+
+
               <ScrollView style={{ flex: 1 }}>
 
-                <Text style={{ color: 'red' }}> {this.getErrorMessages()}  </Text>
-
-                <View style={styles.InputView}>
+                <View style={Styles.InputView}>
 
                   <Input
                     ref="name"
                     placeholder='First name'
-                    autoCapitalize="none"
                     onChangeText={(firstName) => this.setState({ firstName })}
                     placeholderTextColor='#9899a2'
                     inputStyle={
@@ -382,7 +420,6 @@ class RegisterSteps extends ValidationComponent {
                   <Input
                     ref="name"
                     placeholder='Last name'
-                    autoCapitalize="none"
                     onChangeText={(lastName) => this.setState({ lastName })}
                     placeholderTextColor='#9899a2'
                     inputStyle={
@@ -408,7 +445,6 @@ class RegisterSteps extends ValidationComponent {
 
                   <Input
                     placeholder='Address'
-                    autoCapitalize="none"
                     onChangeText={(address) => this.setState({ address })}
                     placeholderTextColor='#9899a2'
                     inputStyle={
@@ -432,7 +468,7 @@ class RegisterSteps extends ValidationComponent {
 
                   <Input
                     placeholder='phone number'
-                    autoCapitalize="none"
+                    keyboardType='numeric'
                     onChangeText={(phone) => this.setState({ phone })}
                     placeholderTextColor='#9899a2'
                     inputStyle={
@@ -446,12 +482,30 @@ class RegisterSteps extends ValidationComponent {
                     }
                     rightIcon={
                       <MaterialIcons
-                    
-                      name='phone-iphone'
-                      size={25}
-                      color='#9899a2' />
+
+                        name='phone-iphone'
+                        size={25}
+                        color='#9899a2' />
                     }
                   />
+
+                  <Picker
+                    // headerComponent={
+                    //   <Header>
+                    //     <Button transparent>
+                    //       Custom Back
+                    //             </Button>
+                    //     <Title>Custom Header</Title>
+                    //   </Header>
+                    // }
+                    mode='dropdown'
+                    selectedValue={this.state.selectedCountry}
+
+                    onValueChange={this.onValueChange.bind(this)}>
+                    <Item label='Choose Your city' value='Choose Your city' />
+                    {this.countryList()}
+                 
+                  </Picker>
                 </View>
 
 
@@ -468,87 +522,11 @@ class RegisterSteps extends ValidationComponent {
   }
 }
 
-const styles = StyleSheet.create({
-
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-
-
-
-
-  },
-
-  BeViewStyle: {
-    backgroundColor: '#3b3c4e',
-    width: width / 4,
-    height: width / 4,
-    borderRadius: 15,
-    alignSelf: 'center',
-    marginTop: width / 3,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  BStyle: {
-
-    color: '#ffffff',
-    fontSize: 40,
-
-
-
-  },
-  eStyle: {
-
-    color: '#ffffff',
-    fontSize: 40,
-
-    borderTopWidth: 3,
-    borderTopColor: '#fbc563',
-
-
-
-  },
-  TxtStyle: {
-
-    color: '#3b3c4e',
-    fontSize: 17,
-    marginTop: width / 10,
-    alignSelf: 'center',
-    fontStyle: 'italic'
-
-
-
-
-  },
-  ButtonView: {
-    justifyContent: 'flex-end',
-    marginVertical: width / .9
-
-
-
-
-  },
-  InputView: {
-    width: width / 1.1,
-    color: '#f3f3f3',
-    fontSize: 20,
-    backgroundColor: '#f3f3f3',
-    alignSelf: 'center',
-    elevation: 2,
-    marginTop: width / 2
-
-
-  },
-
-
-
-
-
-});
 
 const mapStateToProps = state => ({
 
 })
 
 export default connect(mapStateToProps)(RegisterSteps);
+
+
