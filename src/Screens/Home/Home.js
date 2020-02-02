@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Text, StyleSheet, Dimensions ,Image } from 'react-native';
 import { View } from 'native-base';
-import MyButton from '../../Components/MyButton';
 import { Navigation } from 'react-native-navigation'
 import Header from '../../Components/header'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';

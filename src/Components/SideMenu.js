@@ -147,7 +147,16 @@ class SideMenu extends Component {
                     id: 'profileId',
                     name: 'Profile',
                     passProps: {
-                        title: 'My Profile'
+                        title: 'My Profile',
+                        photo: this.props.photoUri,
+                        country: this.props.country,
+                        email: this.props.email,
+                        fName: this.props.fName,
+                        lName: this.props.lName,
+                        address: this.props.address,
+                        phone :this.props.phone ,
+                        editBtn :true
+
                     }
                 }
             });
@@ -304,6 +313,7 @@ const styles = StyleSheet.create({
         marginRight: width / 6,
         textAlign: 'center',
         marginTop: 15,
+        
 
     },
     MenuItems: {
@@ -359,6 +369,8 @@ const mapStateToProps = state => ({
     lName: state.auth.lName,
     photoUri: state.auth.photoUri,
     address: state.auth.address,
+    country: state.auth.country ,
+    phone : state.auth.phone
 
 
 

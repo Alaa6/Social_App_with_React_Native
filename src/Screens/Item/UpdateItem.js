@@ -246,7 +246,7 @@ class UpdateItem extends Component {
                          />
 
 
-                    <MyButton title='Update' customClick={this.UbdateData} />
+                    <MyButton title='Update' customClick={this.UbdateData}  backgroundColor='#3b3c4e' btnWidth={width/1.1}/>
 
                 </ScrollView>
 

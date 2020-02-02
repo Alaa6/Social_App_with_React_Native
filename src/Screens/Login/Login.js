@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Dimensions, Keyboard, ActivityIndicator } from 'react-native';
+import { Text, StyleSheet, Dimensions, Keyboard, ActivityIndicator ,Alert } from 'react-native';
 import { View } from 'native-base';
 import MyButton from '../../Components/MyButton'
 import { Input } from 'react-native-elements';
@@ -33,6 +33,12 @@ Navigation.registerComponent('Home', () => (props) => (
         <Home {...props} />
     </Provider>
 ), () => Home);
+
+Navigation.registerComponent('Login', () => (props) => (
+    <Provider store={store}>
+        <Login {...props} />
+    </Provider>
+), () => Login);
 
 
 
@@ -92,12 +98,34 @@ async function login(email, password) {
 
     try {
         await auth().signInWithEmailAndPassword(email, password);
+        goToHomeScreen(email)
        
       
 
 
     } catch (e) {
-        alert(e.message)
+       // alert(e.message)
+        Alert.alert(
+            'Error',
+            e.message,
+            [
+                {
+                    text: 'Ok',
+                    onPress: () => {
+                        Navigation.push('loginId', {
+                            component: {
+                                id: 'loginId',
+                                name: 'Login',
+                                passProps: {
+                                    
+                                }
+                            }
+                        });
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
     }
 }
 
@@ -131,7 +159,7 @@ class Login extends ValidationComponent {
                 this.props.loginRequest(this.state.email, this.state.password)
                
                 Keyboard.dismiss();
-                goToHomeScreen(this.state.email)
+               
     
 
             }
@@ -263,7 +291,7 @@ class Login extends ValidationComponent {
                     <View style={Styles.activity}>
                         <ActivityIndicator size="small" color="#3b3c4e" />
                     </View>
-                    : <MyButton title="Log in" customClick={this.userLogin}  btnWidth={width/1.1}></MyButton>
+                    : <MyButton title="Log in" customClick={this.userLogin}  btnWidth={width/1.1}  backgroundColor='#3b3c4e' ></MyButton>
 
 
                 }

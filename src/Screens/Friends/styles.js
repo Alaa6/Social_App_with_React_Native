@@ -4,7 +4,8 @@ const styles ={
      flex: 1,
      paddingBottom: 22 ,
      marginTop :10 ,
-     marginLeft :20
+     marginLeft :20 ,
+     
     },
     item: {
       padding: 10,

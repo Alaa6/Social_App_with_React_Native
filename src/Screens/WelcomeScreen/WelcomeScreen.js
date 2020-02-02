@@ -52,7 +52,7 @@ Navigation.registerComponent('Login', () => (props) => (
         </View>
         <Text style={styles.TxtStyle}>{'Showcase&Discover creative work'}</Text>
         <View style={styles.ButtonView}>
-          <MyButton title="Get Started" customClick={goToLoginScreen}  btnWidth={width/1.1}></MyButton>
+          <MyButton title="Get Started" customClick={goToLoginScreen}  btnWidth={width/1.1}  backgroundColor='#3b3c4e' ></MyButton>
 
 
         </View>

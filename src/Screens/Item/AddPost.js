@@ -270,7 +270,7 @@ class AddItem extends Component {
                         name='Description' />
 
 
-                    <MyButton title='Save' customClick={this.SaveData} />
+                    <MyButton title='Save' customClick={this.SaveData}  backgroundColor='#3b3c4e' btnWidth={width/1.1}/>
 
                 </ScrollView>
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, Dimensions, ScrollView, TouchableOpacity, Image, ToastAndroid } from 'react-native';
+import { Text, Dimensions, ScrollView, TouchableOpacity, Image, ToastAndroid ,Keyboard} from 'react-native';
 import { View, Picker, Header, Button, Title } from 'native-base';
 import { Navigation } from 'react-native-navigation'
 import store from '../../store';
@@ -80,6 +80,7 @@ class RegisterSteps extends ValidationComponent {
   constructor(props) {
     super(props);
     this.state = {
+      email:'',
       firstName: '',
       lastName: '',
       address: '',
@@ -186,7 +187,7 @@ class RegisterSteps extends ValidationComponent {
     const RegisterUser = (values) => {
 
       register(values.email, values.password);
-      this.setState({ nextBtn: true, showCreateBtn: false })
+      this.setState({ nextBtn: true, showCreateBtn: false ,email :values.email})
       Keyboard.dismiss();
 
     }
@@ -355,7 +356,7 @@ class RegisterSteps extends ValidationComponent {
 
 
 
-                        {showCreateBtn && <MyButton title="Greate a new account" customClick={props.handleSubmit} ></MyButton>}
+                        {showCreateBtn && <MyButton title="Greate a new account" customClick={props.handleSubmit}  backgroundColor='#3b3c4e' ></MyButton>}
 
 
                       </Form>

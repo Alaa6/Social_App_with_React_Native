@@ -13,7 +13,7 @@ import Header from '../../Components/header';
 
 
 
-
+const {width} = Dimensions.get('window');
 
 
 
@@ -41,15 +41,17 @@ class Profile extends Component {
 
 
     render() {
-
+     const {fName ,lName ,phone ,photo,country ,address ,email ,msgBtn ,editBtn}  =this.props
 
         return (
             <View style={Styles.container}>
              <Header  backgroundColor='#3b3c4e'   color='#fff'/>
 
                 <View style={Styles.firstHalf}>
-                    <Image source={{uri : this.props.photoUri}} style={Styles.imageProfile} />
-                    <Text style={Styles.userName} > {this.props.fName + ' ' + this.props.lName}  </Text>
+                    <Image source={{uri : photo}} style={Styles.imageProfile} />
+                    <Text style={Styles.userName} > {fName + ' ' + lName}  </Text>
+                   { msgBtn && <MyButton title="Send message" customClick={null} backgroundColor='#d4d4d7' color='#3b3c4e' btnWidth={width/2}></MyButton> }
+
                 </View>
 
                 <View style ={Styles.secondHalf}>
@@ -60,7 +62,7 @@ class Profile extends Component {
                             color='#3b3c4e'
 
                         />
-                        <Text style={Styles.txtStyle}>{this.props.email}</Text>
+                        <Text style={Styles.txtStyle}>{email}</Text>
                     </View>
 
                     <View style={Styles.row}>
@@ -71,7 +73,7 @@ class Profile extends Component {
                             color='#3b3c4e'
 
                         />
-                        <Text style={Styles.txtStyle}>{this.props.address}</Text>
+                        <Text style={Styles.txtStyle}>{address + ' / '+ country}</Text>
                     </View>
 
                     <View style={Styles.row}>
@@ -80,10 +82,10 @@ class Profile extends Component {
                             name='phone-iphone'
                             size={30}
                             color='#3b3c4e' />
-                        <Text style={Styles.txtStyle}>{this.props.phone}</Text>
+                        <Text style={Styles.txtStyle}>{phone}</Text>
                     </View>
                 </View>
-                <MyButton title="Edit Profile" customClick={null} ></MyButton>
+               { editBtn && <MyButton title="Edit Profile" customClick={null} backgroundColor='#3b3c4e' btnWidth={width/1.1} ></MyButton>}
 
 
             </View>
@@ -93,15 +95,6 @@ class Profile extends Component {
 
 
 const mapStateToProps = state => ({
-    email: state.auth.email,
-    fName: state.auth.fName,
-    lName: state.auth.lName,
-    photoUri: state.auth.photoUri,
-    address: state.auth.address,
-    phone :state.auth.phone ,
-
-
-
 
 })
 
