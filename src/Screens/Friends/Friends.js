@@ -1,14 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
 import { Text, FlatList, View, ActivityIndicator, ScrollView  ,Image,Dimensions} from 'react-native';
 import database from '@react-native-firebase/database';
-import auth from '@react-native-firebase/auth';
 import Styles from './styles'
 import Header from '../../Components/header'
 import MyButton from '../../Components/MyButton'
 
-
-
-const snapshot = database().ref('/users').once('value');
 
 const {width} = Dimensions.get('window');
 
@@ -24,22 +20,13 @@ class Friends extends Component {
     }
   }
 
-
-
-
-
   componentDidMount() {
-
-
-
     this.unsubscribe = database().ref(`/users`).on('value', this.onCollectionUpdate);
   }
 
   onCollectionUpdate = (querySnapshot) => {
     const usersList = [];
-    const { uid } = auth().currentUser.uid;
     querySnapshot.forEach((doc) => {
-      //  const { fName, lName, photo } = doc.data();
       console.log(doc.child('address').val());
 
       usersList.push({
@@ -57,65 +44,6 @@ class Friends extends Component {
     });
   }
 
-  //  onSnapshot =(snapshot) =>{
-  //   const list = [];
-
-  //   // Create our own array of games in order
-  //   snapshot.forEach(game => {
-  //     list.push({
-  //       key: game.id, // Add custom key for FlatList usage
-  //       ...game,
-  //     });
-  //   });
-  //   this.setState({usersList :list})
-
-
-  //   //setLoading(false);
-  // }  // end onSnapshot
-
-
-
-  Gamess = () => {
-    const ref = database().ref(`/users`);
-    const snapshot = ref.once('value');
-    console.log('yom tlat   ' + snapshot);
-
-    const refA = database().ref('/users').on('value', function (snapshot) {
-
-      console.log(snapshotToArray(snapshot));
-
-      // function snapshotToArray(snapshot) {
-      var returnArr = [];
-
-      snapshot.forEach(function (childSnapshot) {
-        var item = childSnapshot.val();
-        item.key = childSnapshot.key;
-
-        returnArr.push(item);
-
-      });
-
-
-      // };
-    });
-
-
-    // console.log('ref      '+ref);
-
-
-    //const  users = ref.once('value', this.onSnapshot);
-
-
-
-    // return <FlatList data={refA} renderItem={({ item }) => {
-    //   <View>
-    //     {console.log('bsm alla   '+item.fName)}
-
-    //       <Text>{item.fName}</Text>
-
-    //   </View>
-    // }} />;
-  }
 
 
   render() {
@@ -146,8 +74,6 @@ class Friends extends Component {
              <MyButton title="follow" customClick={this.userLogin} btnWidth={width/3.1}></MyButton>
 
             </View>
-
-          
 
           </View>
         )} />
