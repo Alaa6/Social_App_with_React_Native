@@ -67,7 +67,8 @@ async function saveUserData(email, firstName, lastName, address, photo, phone, s
     address,
     photo,
     phone,
-    selectedCountry
+    selectedCountry ,
+  
 
   });
 }

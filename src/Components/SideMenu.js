@@ -15,6 +15,7 @@ import AddItem from '../Screens/Item/AddPost'
 import Login from '../Screens/Login/Login'
 import Profile from '../Screens/Profile/profile'
 import Friends from '../Screens/Friends/Friends'
+import MyFriends from '../Screens/MyFriends/myFriends'
 
 const { width } = Dimensions.get('window');
 
@@ -45,6 +46,13 @@ Navigation.registerComponent('Friends', () => (props) => (
         <Friends {...props} />
     </Provider>
 ), () => Friends);
+
+Navigation.registerComponent('MyFriends', () => (props) => (
+    <Provider store={store}>
+        <MyFriends {...props} />
+    </Provider>
+), () => MyFriends);
+
 
 
 
@@ -154,8 +162,8 @@ class SideMenu extends Component {
                         fName: this.props.fName,
                         lName: this.props.lName,
                         address: this.props.address,
-                        phone :this.props.phone ,
-                        editBtn :true
+                        phone: this.props.phone,
+                        editBtn: true
 
                     }
                 }
@@ -193,6 +201,30 @@ class SideMenu extends Component {
             });
 
         }
+
+        const goToMyFriends = () => {
+
+            Navigation.push('homeId', {
+                component: {
+                    id: 'myFriendsId',
+                    name: 'MyFriends',
+                    passProps: {
+                        title: 'My Friends'
+                    }
+                }
+            });
+
+            Navigation.mergeOptions('homeId', {
+                sideMenu: {
+                    left: {
+                        visible: false,
+
+                    },
+                },
+            });
+
+        }
+
 
 
 
@@ -234,6 +266,18 @@ class SideMenu extends Component {
                         onPress={goToProfile}>{"My profile"}</Text>
 
                 </View>
+                <TouchableOpacity onPress={goToMyFriends}>
+                <View style={styles.MenuItems}>
+
+                    <FontAwesome5
+                        style={styles.Icons}
+                        name='users'
+                        size={25}
+                        color='#3b3c4e' />
+                    <Text style={styles.ItemsText}>{"My friends"}</Text>
+
+                </View>
+                </TouchableOpacity>
 
                 <TouchableOpacity onPress={goToFriends}>
                     <View style={styles.MenuItems} >
@@ -313,7 +357,7 @@ const styles = StyleSheet.create({
         marginRight: width / 6,
         textAlign: 'center',
         marginTop: 15,
-        
+
 
     },
     MenuItems: {
@@ -369,8 +413,8 @@ const mapStateToProps = state => ({
     lName: state.auth.lName,
     photoUri: state.auth.photoUri,
     address: state.auth.address,
-    country: state.auth.country ,
-    phone : state.auth.phone
+    country: state.auth.country,
+    phone: state.auth.phone
 
 
 

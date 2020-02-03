@@ -1,5 +1,5 @@
 import React, { Component, useState, useEffect } from 'react';
-import { Text, FlatList, View, ActivityIndicator, ScrollView  ,Image,Dimensions, TouchableOpacity,ToastAndroid} from 'react-native';
+import { Text, FlatList, View, ActivityIndicator, ScrollView  ,Image,Dimensions, TouchableOpacity } from 'react-native';
 import database from '@react-native-firebase/database';
 import Styles from './styles'
 import Header from '../../Components/header'
@@ -8,68 +8,67 @@ import { Navigation } from 'react-native-navigation';
 import auth from '@react-native-firebase/auth';
 
 const {width} = Dimensions.get('window');
+const uid = auth().currentUser.uid;
 
-async function followFriend( friendId ,fName ,lName ,email ,phone ,photo ,country,address ) {
-  const uid = auth().currentUser.uid;
-
-  const ref = database().ref(`/users/${uid}/friends/${friendId}`);
-
-  await ref.set({
-    friendId ,
-    fName ,
-    lName ,
-    email,
-    phone ,
-    photo ,
-    country ,
-    address
-  });
+async function unFollowFriend( friendId) {
+    const uid = auth().currentUser.uid;
   
+    const ref = database().ref(`/users/${uid}/friends/${friendId}`);
+    console.log(ref);
+    
+  
+    await ref.remove()
 }
 
-
-class Friends extends Component {
+class MyFriends extends Component {
 
   constructor(props) {
     super(props);
     this.ref = database().ref(`/users`);
     this.unsubscribe = null;
+
     this.state = {
-      usersList: [],
+      myFriendsList: [],
       isLoading: true,
-      isFollow :false 
+
+     
+     
+     
     }
   }
 
   componentDidMount() {
-    this.unsubscribe = database().ref(`/users`).on('value', this.onCollectionUpdate);
+    this.unsubscribe = database().ref(`/users/${uid}/friends`).on('value', this.onCollectionUpdate);
   }
 
   onCollectionUpdate = (querySnapshot) => {
-    const usersList = [];
-    querySnapshot.forEach((user) => {
-      console.log(user.child('address').val());
+    const myFriendsList = [];
+    querySnapshot.forEach((friend) => {
+      console.log(friend.child('fName').val());
 
-      usersList.push({
-        key: user.id,
-        user, // DocumentSnapshot
-        fName: user.child('firstName').val(),
-        lName: user.child('lastName').val(),
-        photo: user.child('photo').val(),
-        email : user.child('email').val() ,
-        country :user.child('selectedCountry').val(),
-        phone :user.child('phone').val() ,
-        address :user.child('address').val() ,
-        uid : user.child('uid').val() ,
-       // friendId:user.child('uid').child('friends').val() 
+      myFriendsList.push({
+        key: friend.id,
+        friend, // DocumentSnapshot
+        fName: friend.child('fName').val(),
+        lName: friend.child('lName').val(),
+        photo: friend.child('photo').val(),
+        email : friend.child('email').val() ,
+        country :friend.child('country').val(),
+        phone :friend.child('phone').val() ,
+        address :friend.child('address').val() ,
+        friendId : friend.child('friendId').val() ,
+
+        
 
       });
     });
     this.setState({
-      usersList,
+        myFriendsList,
       isLoading: false,
     });
   }
+
+  
 
 
 
@@ -86,11 +85,11 @@ class Friends extends Component {
     return (
 
     <View style ={{marginBottom :30}}>
-   <Header  title ='Choose friends' color='#FFF' backgroundColor='#3b3c4e'   componentId={this.props.componentId }  />
+   <Header  title ='My Friends' color='#FFF' backgroundColor='#3b3c4e'   componentId={this.props.componentId }  />
 
    <FlatList
         style ={{marginBottom :30}}
-        data={this.state.usersList}
+        data={this.state.myFriendsList}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity onPress ={()=>{
@@ -120,10 +119,9 @@ class Friends extends Component {
                 <Text style={{ fontWeight: 'bold', fontSize: 18, marginLeft: 4 }}>{item.fName}</Text>
                 <Text style={{ fontSize: 15, marginLeft: 4 }}>{item.email}</Text>
               </View>
-             {<MyButton title="follow" customClick={()=>{
+             {<MyButton title="unfollow" customClick={()=>{
                this.setState({isFollow: true})
-               followFriend(item.uid ,item.fName ,item.lName ,item.email ,item.phone ,item.photo ,item.country,item.address)
-               ToastAndroid.show('You follow '+ item.fName, ToastAndroid.LONG);
+               unFollowFriend(item.friendId)
              }} btnWidth={width/3.1}  backgroundColor='#3b3c4e'  ></MyButton> }
 
             </View>
@@ -146,4 +144,4 @@ class Friends extends Component {
 
 
 
-export default Friends;
+export default MyFriends;

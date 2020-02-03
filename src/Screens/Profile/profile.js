@@ -9,11 +9,19 @@ import store from '../../store';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Header from '../../Components/header';
+import Chat from '../../Screens/Chat/Chat'
+
 
 
 
 
 const {width} = Dimensions.get('window');
+
+Navigation.registerComponent('Chat', () => (props) => (
+    <Provider store={store}>
+        <Chat {...props} />
+    </Provider>
+), () => Chat);
 
 
 
@@ -37,11 +45,23 @@ class Profile extends Component {
     }
 
 
-
+ 
 
 
     render() {
      const {fName ,lName ,phone ,photo,country ,address ,email ,msgBtn ,editBtn}  =this.props
+
+     const goToChat =()=>{
+        Navigation.push('profileId', {
+            component: {
+                id: 'chatId',
+                name: 'Chat',
+                passProps: {
+                    title: 'Chat'
+                }
+            }
+        });
+     }
 
         return (
             <View style={Styles.container}>
@@ -50,7 +70,7 @@ class Profile extends Component {
                 <View style={Styles.firstHalf}>
                     <Image source={{uri : photo}} style={Styles.imageProfile} />
                     <Text style={Styles.userName} > {fName + ' ' + lName}  </Text>
-                   { msgBtn && <MyButton title="Send message" customClick={null} backgroundColor='#d4d4d7' color='#3b3c4e' btnWidth={width/2}></MyButton> }
+                   { msgBtn && <MyButton title="Send message" customClick={goToChat} backgroundColor='#d4d4d7' color='#3b3c4e' btnWidth={width/2}></MyButton> }
 
                 </View>
 
