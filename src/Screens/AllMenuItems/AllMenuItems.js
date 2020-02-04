@@ -95,10 +95,14 @@ class ViewAllMenuItem extends React.Component {
 
 
 
-
+ componentDidMount(){
+  
+    
+ }
 
     render() {
-        
+
+       
     
         const pushHomeScreen = () => {
             Navigation.push('homeId',{
@@ -111,6 +115,15 @@ class ViewAllMenuItem extends React.Component {
                 }
     
             })
+        }
+
+        const deleto =(id)=>{
+            realm.write(() => {
+                realm.delete(
+                    realm.objects('Item_Details').filtered('post_id =' +id)
+                );
+            });
+
         }
 
   
@@ -128,6 +141,7 @@ class ViewAllMenuItem extends React.Component {
                         <View style={{ backgroundColor: 'white', padding: 20 }}>
                             {console.log('sa7b l post     '+ item.userId)}
                             {console.log('eli 3aml login    '+ uid)}
+                            {/* { deleto(item.post_id)} */} 
                             
                         { <Menu ref={ref => (this.menu = ref)}>
                             <MenuTrigger text='' />
@@ -148,12 +162,13 @@ class ViewAllMenuItem extends React.Component {
                                     });
                                 }} text='Edit' />
                                 <MenuOption onSelect={ () => {
+                                   
 
-                                    realm.write(() => {
-                                        realm.delete(
-                                            realm.objects('Item_Details').filtered('post_id =' + item.post_id)
-                                        );
-                                    });
+                                // realm.write(() => {
+                                //     realm.delete(
+                                //         realm.objects('Item_Details').filtered('post_id =' + item.post_id)
+                                //     );
+                                // });
                                     Alert.alert(
                                         'Delete',
                                         'this Item is deleted successfully !',
