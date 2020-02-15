@@ -7,7 +7,7 @@ const validationSchema = Yup.object().shape({
 
     password: Yup.string()
         .required('This field is required !')
-        .min(6, "The password length must be greater than 6"),
+        .min(6, "The password length must be equal to or greater than 6"),
 
      confPassword: Yup.string()
         .required('This field is required !')

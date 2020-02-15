@@ -27,13 +27,15 @@ import {
   withNextInputAutoFocusForm,
   // withNextInputAutoFocusInput
 } from "react-native-formik";
+import ImagePickerCrop from 'react-native-image-crop-picker';
 
 
 
 
 const Form = withNextInputAutoFocusForm(View);
 const { width } = Dimensions.get('window');
-const Item = Picker.Item;
+const Item = Picker.Item; 
+
 
 Navigation.registerComponent('Login', () => (props) => (
   <Provider store={store}>
@@ -41,37 +43,12 @@ Navigation.registerComponent('Login', () => (props) => (
   </Provider>
 ), () => Login);
 
+Navigation.registerComponent('RegisterSteps', () => (props) => (
+  <Provider store={store}>
+      <RegisterSteps {...props} />
+  </Provider>
+), () => RegisterSteps);
 
-async function register(email, password) {
-
-  try {
-    await auth().createUserWithEmailAndPassword(email, password);
-  } catch (e) {
-    console.error(e.message);
-
-  }
-}
-
-
-
-async function saveUserData(email, firstName, lastName, address, photo, phone, selectedCountry) {
-  const uid = auth().currentUser.uid;
-
-  const ref = database().ref(`/users/${uid}`);
-
-  await ref.set({
-    uid,
-    email,
-    firstName,
-    lastName,
-    address,
-    photo,
-    phone,
-    selectedCountry ,
-  
-
-  });
-}
 
 
 class RegisterSteps extends ValidationComponent {
@@ -99,24 +76,75 @@ class RegisterSteps extends ValidationComponent {
     }
   }
 
+  refreshScreen = () => {
 
+    Navigation.push('registerStepsId', {
+      component: {
+        id: 'registerStepsId',
+        name: 'RegisterSteps',
+        passProps: {
 
-
-  handleImagePicker = () => {
-    const options = {  //options
-      noData: true,
-    };
-    ImagePicker.launchImageLibrary(options, response => {
-      console.log('resposns' + response);
-      if (response.uri) {
-        this.setState({ photo: response.uri });
+        }
       }
-    });
+
+    })
+
+  }
+  
+   
+
+
+
+
+  handleImagePicker = async() => {
+
+    try {
+      //pick image information
+      let img = await ImagePickerCrop.openPicker({
+          width: 200,
+          height: 200,
+          cropping: true,
+      });
+      console.log("image path: " + img.path.toString());
+
+      if (img) {
+             this.setState({ photo: img.path.toString()});
+           }
+
+
+  } catch (err) {
+      console.warn("error in setImage : " + err.toString());
+  }
+
+    // ImagePickerCrop.openPicker({
+    //   width: 300,
+    //   height: 400,
+    //   cropping: true
+    // }).then(image => {
+
+    //   console.log(image);
+    //   console.log(image.path);
+    //   console.log(image.data);
+    //   if (image) {
+    //          this.setState({ photo: image.path });
+    //        }
+    // });
+
+
+    // const options = {  //options
+    //   noData: true,
+    // };
+    // ImagePicker.launchImageLibrary(options, response => {
+    //   console.log('resposns' + response);
+    //   if (response.uri) {
+    //     this.setState({ photo: response.uri });
+    //   }
+    // });
 
 
   };
 
-  handleCameraPicker = () => {
+  handleCameraPicker =  () => {
     const options = {  //options
       noData: true,
     };
@@ -182,7 +210,29 @@ class RegisterSteps extends ValidationComponent {
   render() {
 
     const { email, firstName, lastName, address, photo, showCreateBtn, phone, selectedCountry } = this.state;
+    console.log("el photo mn l state " + photo);
+    
+ 
+  /* ___________________register user in firebase _________________________ */
 
+  const  register = async (email, password) => {
+
+
+      try {
+        await auth().createUserWithEmailAndPassword(email, password);
+      } catch (e) {
+       await alert(e.message)
+        this.setState({ 
+          showCreateBtn: true ,
+          nextBtn: false,
+        })
+    
+      }
+    }
+    
+    
+    
+    
 
 
     const RegisterUser = (values) => {
@@ -210,6 +260,26 @@ class RegisterSteps extends ValidationComponent {
     }
 
 
+
+  const  saveUserData = async (email, firstName, lastName, address, photo, phone, selectedCountry) => {
+      const uid = auth().currentUser.uid;
+    
+      const ref = database().ref(`/users/${uid}`);
+    
+      await ref.set({
+        uid,
+        email,
+        firstName,
+        lastName,
+        address,
+        photo,
+        phone,
+        selectedCountry ,
+      
+    
+      });
+    }
+    
 
     const saveData = () => {
 
@@ -379,24 +449,29 @@ class RegisterSteps extends ValidationComponent {
             <View style={Styles.container}>
 
 
-              <View style={{ alignSelf: 'center', marginTop: 10 }}>
-                {!photo ? <TouchableOpacity onPress={this.handleImagePicker}  >
-                  <Ant
-                    //style={styles.TxtStyle}
-                    name='adduser'
-                    size={100}
-                    color='#9899a2'
-                  />
-                </TouchableOpacity>
-                  : <Image source={{ uri: photo }} style={{ width: width / 2, height: width / 2, alignSelf: 'center', resizeMode: 'center', borderRadius: 100 }} />
-                }
+            <View style={{ alignSelf: 'center', marginTop: 10 }}>
+              
+              {!photo ? <TouchableOpacity onPress={this.handleImagePicker}  >
+                <Ant
+                  //style={styles.TxtStyle}
+                  name='adduser'
+                  size={100}
+                  color='#9899a2'
+                />
+              </TouchableOpacity>
+                : <Image source={{ uri: photo }} style={{ width: width / 2, height: width / 2, alignSelf: 'center', borderRadius: 100 }} />
+              }
 
-              </View>
-
-
+            </View>
 
 
               <ScrollView style={{ flex: 1 }}>
+   
+             
+            
+
+         
+
 
                 <View style={Styles.InputView}>
 
@@ -405,6 +480,8 @@ class RegisterSteps extends ValidationComponent {
                     placeholder='First name'
                     onChangeText={(firstName) => this.setState({ firstName })}
                     placeholderTextColor='#9899a2'
+                    autoCapitalize='none'
+
                     inputStyle={
                       { color: '#9899a2' }
                     }

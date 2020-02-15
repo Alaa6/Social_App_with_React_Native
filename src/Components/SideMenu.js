@@ -147,7 +147,7 @@ class SideMenu extends Component {
             });
 
         }
-
+  
         const goToProfile = () => {
 
             Navigation.push('homeId', {

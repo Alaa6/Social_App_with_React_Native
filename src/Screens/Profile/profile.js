@@ -49,7 +49,7 @@ class Profile extends Component {
 
 
     render() {
-     const {fName ,lName ,phone ,photo,country ,address ,email ,msgBtn ,editBtn}  =this.props
+     const {fName ,lName ,phone ,photo,country ,address ,email ,msgBtn ,editBtn ,componentId}  =this.props
 
      const goToChat =()=>{
         Navigation.push('profileId', {
@@ -65,11 +65,11 @@ class Profile extends Component {
 
         return (
             <View style={Styles.container}>
-             <Header  backgroundColor='#3b3c4e'   color='#fff'/>
+             <Header  backgroundColor='#3b3c4e'   color='#fff' showBack componentId= {componentId}/>
 
                 <View style={Styles.firstHalf}>
                     <Image source={{uri : photo}} style={Styles.imageProfile} />
-                    <Text style={Styles.userName} > {fName + ' ' + lName}  </Text>
+                    <Text style={Styles.userName} > { fName + ' ' + lName}  </Text>
                    { msgBtn && <MyButton title="Send message" customClick={goToChat} backgroundColor='#d4d4d7' color='#3b3c4e' btnWidth={width/2}></MyButton> }
 
                 </View>

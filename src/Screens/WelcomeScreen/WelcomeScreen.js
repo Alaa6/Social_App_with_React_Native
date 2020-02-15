@@ -33,7 +33,17 @@ Navigation.registerComponent('Login', () => (props) => (
           name: 'Login',
           passProps: {
   
-          }
+          },
+          options: {
+           // topBar: { visible: false, drawBehind: true },
+            sideMenu: {
+              left: {
+                visible: false,
+                enabled: false
+                }
+            }
+            
+          },
         }
   
       })

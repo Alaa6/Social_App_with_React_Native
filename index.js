@@ -64,7 +64,7 @@ Navigation.events().registerAppLaunchedListener(()=>{
           component :{
             id : 'SideMenu' ,
             name :'SideMenu' ,
-          } ,
+          } ,   
         }
     
       } // end side menu

@@ -141,7 +141,7 @@ class ViewAllMenuItem extends React.Component {
                         <View style={{ backgroundColor: 'white', padding: 20 }}>
                             {console.log('sa7b l post     '+ item.userId)}
                             {console.log('eli 3aml login    '+ uid)}
-                            {/* { deleto(item.post_id)} */} 
+                            {/* { deleto(item.post_id)}  */}
                             
                         { <Menu ref={ref => (this.menu = ref)}>
                             <MenuTrigger text='' />

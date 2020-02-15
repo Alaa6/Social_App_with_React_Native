@@ -24,6 +24,11 @@ export const typeloginRequest = (type) => async (dispatch) => {
   dispatch({ type: USER_TYPE, payload: type });
 }
 
+
+export const saveUserInfo = (firstName,lastName,photoUri,address ,phone ,uid ,country) => async (dispatch) => {
+  saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone ,uid ,country);
+}
+
 export const loginRequest = (email , password ,remeber, shouldLogin) => async (dispatch) => {
   dispatch({ type: LOGIN_ATTEMPT });
   console.log(  'i am ' +email + '&&'+ password)
@@ -31,22 +36,10 @@ export const loginRequest = (email , password ,remeber, shouldLogin) => async (d
    handleResponse(dispatch , email ,password)
   
 
-    // Get the users ID
-  const uid = auth().currentUser.uid;
-  // Create a reference
-  const ref = database().ref(`/users/${uid}`);
-
-  // Fetch the data snapshot
-  const snapshot = await ref.once('value');
-  const  firstName= snapshot.child('firstName').val();
-  const  lastName= snapshot.child('lastName').val();
-  const  photoUri= snapshot.child('photo').val();
-  const  address= snapshot.child('address').val();
-  const  phone= snapshot.child('phone').val();
-  const  country = snapshot.child('selectedCountry').val();
 
 
-  saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone ,uid ,country);
+   
+   
 
 
   // axios.post(`${API_ENDPOINT}/signin`, values, {
@@ -129,6 +122,8 @@ const onLoginFailed =(dispatch ,errorMessage)=>{
 }
 
 const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone ,uid ,country)=>{
+  console.log('test    ' +fName);
+  
 
   dispatch ({
     type :GET_USER_DATA ,

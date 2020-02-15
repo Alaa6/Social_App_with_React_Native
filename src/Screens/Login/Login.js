@@ -180,29 +180,29 @@ class Login extends ValidationComponent {
 
 
 
-    EmailValidation(email) {
-        this.validate({
-            //name: { minlength: 3, maxlength: 7, required: true },
-            email: { email: true, required: true },
-            //number: { numbers: true },
-            //date: { date: 'YYYY-MM-DD' }
-        });
+    // EmailValidation(email) {
+    //     this.validate({
+    //         //name: { minlength: 3, maxlength: 7, required: true },
+    //         email: { email: true, required: true },
+    //         //number: { numbers: true },
+    //         //date: { date: 'YYYY-MM-DD' }
+    //     });
 
-        this.setState({ email });
-    }
+    //     this.setState({ email });
+    // }
 
-    PasswordValidation(password) {
-        this.validate({
+    // PasswordValidation(password) {
+    //     this.validate({
 
-            ////name: { minlength: 3, maxlength: 7, required: true },
-            password: { minlength: 5, required: true },
-            //number: { numbers: true },
-            //date: { date: 'YYYY-MM-DD' }
-        });
+    //         ////name: { minlength: 3, maxlength: 7, required: true },
+    //         password: { minlength: 5, required: true },
+    //         //number: { numbers: true },
+    //         //date: { date: 'YYYY-MM-DD' }
+    //     });
 
 
-        this.setState({ password });
-    }
+    //     this.setState({ password });
+    // }
 
 
     render() {
@@ -212,15 +212,30 @@ class Login extends ValidationComponent {
 
 
         const goToRegisterScreen = () => {
+
             Navigation.push(this.props.componentId, {
                 component: {
                     id: 'registerStepsId',
                     name: 'RegisterSteps',
                     passProps: {
 
-                    }
-                }
+                    }  ,
+
+                     options: {
+                    // topBar: { visible: false, drawBehind: true },
+                     sideMenu: {
+                       left: {
+                         visible: false,
+                         enabled: false
+                         }
+                     }
+                     
+                   },
+                } ,
+               
             });
+
+            
         }
 
         return (
@@ -240,7 +255,7 @@ class Login extends ValidationComponent {
                         containerStyle={{ marginTop: 8 }}
                         autoCapitalize="none"
                         placeholder='Account'
-                        onChangeText={(email) => this.EmailValidation(email)}
+                        onChangeText={(email) => this.setState({ email })}
                         placeholderTextColor='#9899a2'
                         inputStyle={
                             { color: '#9899a2' }
@@ -265,7 +280,7 @@ class Login extends ValidationComponent {
 
                         placeholder='Password'
                         autoCapitalize="none"
-                        onChangeText={(password) => this.PasswordValidation(password)}
+                        onChangeText={(password) => this.setState({ password })}
                         placeholderTextColor='#9899a2'
                         inputStyle={
                             { color: '#9899a2' }

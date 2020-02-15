@@ -6,6 +6,7 @@ import Header from '../../Components/header'
 import MyButton from '../../Components/MyButton'
 import { Navigation } from 'react-native-navigation';
 import auth from '@react-native-firebase/auth';
+import { connect } from 'react-redux';
 
 const {width} = Dimensions.get('window');
 const uid = auth().currentUser.uid;
@@ -38,7 +39,9 @@ class MyFriends extends Component {
   }
 
   componentDidMount() {
-    this.unsubscribe = database().ref(`/users/${uid}/friends`).on('value', this.onCollectionUpdate);
+    console.log('test uid   ' + this.props.uid);
+    
+    this.unsubscribe = database().ref(`/users/${this.props.uid}/friends`).on('value', this.onCollectionUpdate);
   }
 
   onCollectionUpdate = (querySnapshot) => {
@@ -85,7 +88,7 @@ class MyFriends extends Component {
     return (
 
     <View style ={{marginBottom :30}}>
-   <Header  title ='My Friends' color='#FFF' backgroundColor='#3b3c4e'   componentId={this.props.componentId }  />
+   <Header  title ='My Friends' color='#FFF' backgroundColor='#3b3c4e'   componentId={this.props.componentId }  showBack />
 
    <FlatList
         style ={{marginBottom :30}}
@@ -144,4 +147,22 @@ class MyFriends extends Component {
 
 
 
-export default MyFriends;
+const mapStateToProps = state => ({
+  email: state.auth.email,
+  fName: state.auth.fName,
+  lName: state.auth.lName,
+  photoUri: state.auth.photoUri,
+  address: state.auth.address,
+  country: state.auth.country,
+  phone: state.auth.phone ,
+  uid :state.auth.uid
+
+
+
+
+})
+
+
+export default connect(mapStateToProps)(MyFriends);
+
+
