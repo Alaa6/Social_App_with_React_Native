@@ -9,10 +9,6 @@ const {width} = Dimensions.get('window');
 
 class Mybutton extends Component {
 
-
-
-
-
   render() {
     const {btnWidth ,backgroundColor ,title ,customClick ,color} = this.props;
   

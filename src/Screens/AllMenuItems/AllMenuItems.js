@@ -197,9 +197,9 @@ class ViewAllMenuItem extends React.Component {
 
                             }}>
                                 <View style={{ backgroundColor: '#fceef8', }}>
-                                    <View style={{ flexDirection: 'row' }}>
+                                    <View style={{ flexDirection: 'row' , marginTop: 7 ,marginHorizontal :7}}>
                                         <Image source={{ uri: item.userPhoto }} style={{ width: 50, height: 50, alignSelf: 'center', marginTop: 5, borderRadius: 100 }} />
-                                        <View>
+                                        <View style ={{ marginHorizontal :5}}>
                                             <Text style={{ fontWeight: 'bold', fontSize: 18, marginLeft: 4 }}>{item.userName}</Text>
                                             <Text style={{ fontSize: 15, marginLeft: 4 }}>{item.userEmail}</Text>
                                             <Text style={{ fontSize: 12, marginLeft: 4, color: '#82838e' }}>{item.post_date}</Text>
@@ -207,8 +207,7 @@ class ViewAllMenuItem extends React.Component {
                                         </View>
                                     </View>
                                     <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>{item.item_description}</Text>
-                                    <Image source={{ uri: item.item_Image }} style={{ width: 300, height: 300, alignSelf: 'center', marginTop: 5, resizeMode: 'stretch' }} />
-                                    <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>video: {item.item_video}</Text>
+                                    <Image source={{ uri: item.item_Image }} style={{ width: 300, height: 300, alignSelf: 'center', marginTop: 5 , marginBottom :5 }} />
 
                                 </View>
 

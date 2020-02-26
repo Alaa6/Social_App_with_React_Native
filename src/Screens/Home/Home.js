@@ -17,7 +17,7 @@ import PushNotification  from 'react-native-push-notification'
 import PushNotificationAndroid from 'react-native-push-notification'
 
 import { saveUserInfo } from '../../actions/auth';
-
+import Lifecycle from '../lifcycleComponent';
 
 const { width } = Dimensions.get('window');
 const {height} =Dimensions.get('window')
@@ -80,6 +80,9 @@ let realm ;
       ],
      
     });
+
+
+    
    
 }
 
@@ -174,44 +177,45 @@ pushLocalNotification = async () => {
 
  componentDidMount(){
    this.saveUserData()
+
   //this.pushLocalNotification()
   
   
   
 }
+
+goToAddItem =()=> {
+
+     
+  Navigation.push(this.props.componentId ,{
+      component: {
+          id: 'addItemId',
+          name: 'AddItem',
+          passProps: {
+              title: 'Add Item'
+          }
+      }
+  });
+}
  
   render() {
-   const goToAddItem =()=> {
-
-     
-       Navigation.push( this.props.componentId ,{
-           component: {
-               id: 'addItemId',
-               name: 'AddItem',
-               passProps: {
-                   title: 'Add Item'
-               }
-           }
-       });
-   }
+  
 
 
 
 
-
-     
-      
-      
-      
+   
     return (
       <View style={styles.container}>
       
 
        <Header  title ='Home' color='#FFF' backgroundColor='#3b3c4e'  showMenu componentId={this.props.componentId }  />
        {/* <Notifications/> */}
-       
+         {Lifecycle}
        <View style ={{width :width , height :width*1.75 , justifyContent:'flex-end'}}>
+     
        <MenuProvider>
+
        <AllMenuItems />
 
        </MenuProvider>
@@ -222,7 +226,7 @@ pushLocalNotification = async () => {
           style={{color :'#FFF'  }}
           name='add'
           size={40} 
-          onPress={goToAddItem}/>
+          onPress={this.goToAddItem}/>
           
       
 

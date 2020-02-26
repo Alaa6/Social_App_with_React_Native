@@ -27,7 +27,7 @@ class Friends extends Component {
     }
   }
 
-
+ 
 
   followFriend = async ( friendId ,fName ,lName ,email ,phone ,photo ,country,address )=> {
 

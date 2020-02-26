@@ -4,15 +4,20 @@ import {
 } from '../actions/types';
 
 const INITIAL_STATE = {
-    uid :'',
-    email: '',
-    password: '',
-    fName: '',
-    lName: '',
-    photoUri: '',
-    address: '',
-    country :'',
-    phone :'' ,
+    user :{
+        token :'' ,
+        uid :'',
+        email: '',
+        password: '',
+        fName: '',
+        lName: '',
+        photoUri: '',
+        address: '',
+        country :'',
+        phone :'' ,
+
+    } ,
+    
     error: '',
     userType: 'INFLUENCER', ordersCounts: {}, success: false, token: '', processing: false, order: null
 };
@@ -30,7 +35,7 @@ export default (state = INITIAL_STATE, action) => {
             return { ...state, processing: false, success: false, error: action.error };
         case LOGIN_SUCCESS:
             return {
-                ...state, processing: false, success: true, email: action.email, password: action.password, error: ''
+                ...state, processing: false, success: true, user : action.user , error: ''
             };
         case GET_USER_DATA:
             return {

@@ -15,6 +15,8 @@ import { Input } from 'react-native-elements';
 import MyButton from '../../Components/MyButton';
 import store from '../../store';
 
+import ImagePickerCrop from 'react-native-image-crop-picker';
+
 
 
 
@@ -78,19 +80,27 @@ class AddItem extends Component {
 
    
 
-    handleImagePicker = () => {
-        const options = {  //options
-            noData: true,
-        };
-        ImagePicker.launchImageLibrary(options, response => {
-            console.log('resposns' + response);
-            if (response.uri) {
-                this.setState({ photo: response.uri });
-            }
-        });
+    handleImagePicker = async() => {
 
-
-    };
+        try {
+          //pick image information
+          let img = await ImagePickerCrop.openPicker({
+              width: 200,
+              height: 200,
+              cropping: true,
+          });
+          console.log("image path: " + img.path.toString());
+    
+          if (img) {
+                 this.setState({ photo: img.path.toString()});
+               }
+    
+    
+      } catch (err) {
+          console.warn("error in setImage : " + err.toString());
+      }
+    
+    }
 
     handleCameraPicker = () => {
         const options = {  //options
@@ -136,7 +146,6 @@ class AddItem extends Component {
 
 
         if (photo) {
-            if (Item_Video) {
                 realm.write(() => {
                     var ID =
                         realm.objects('Item_Details').sorted('post_id', true).length > 0
@@ -180,10 +189,8 @@ class AddItem extends Component {
                 });
 
 
-            } else {
-                alert('Please enter item video');
 
-            }
+            
 
         } else {
             alert('Please Add item image');
@@ -210,7 +217,7 @@ class AddItem extends Component {
 
                 <ScrollView style={{ flex: 1 }} contentContainerStyle={{ justifyContent: 'center', marginTop: 5, }}>
                     {photo ? <Image source={{ uri: photo }} style={{ width: 300, height: 300, alignSelf: 'center', resizeMode: 'stretch' }} />
-                        : <Image source={require('../../assets/images/noImage.png')} style={{ width: 300, height: 300, alignSelf: 'center', resizeMode: 'stretch' }} />
+                        : <Image source={require('../../assets/images/noImage.png')} style={{ width: width/1.1, height: width/1.5, alignSelf: 'center'}} />
                     }
 
                     <View style={{
@@ -242,7 +249,7 @@ class AddItem extends Component {
 
 
 
-                    <Input
+                    {/* <Input
                         containerStyle={styles.textInputStyle}
                         placeholder='Please enter item Video'
                         onChangeText={(Item_Video) => this.setState({ Item_Video })}
@@ -254,7 +261,7 @@ class AddItem extends Component {
                             { borderBottomWidth: 0 }
                         }
 
-                        name='userName' />
+                        name='userName' /> */}
                     <Input
                         containerStyle={styles.textAreaStyle}
                         placeholder='Enter post here ..'

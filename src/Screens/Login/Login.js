@@ -139,8 +139,12 @@ class Login extends ValidationComponent {
         super(props);
         this.state = {
      
-            email: '',
-            password: '',
+            user :{
+                email :'alaa' ,
+                password:'' ,
+            },
+           // email: '',
+           // password: '',
             isLoading: false
 
 
@@ -149,16 +153,19 @@ class Login extends ValidationComponent {
 
 
 
+
     userLogin = () => {
 
-        if (this.state.email) {
-            if (this.state.password) {
+
+        if (this.state.user.email) {
+            if (this.state.user.password) {
 
                 this.setState({ isLoading: true })
-                login(this.state.email, this.state.password);
-                this.props.loginRequest(this.state.email, this.state.password)
+                //login(this.state.email, this.state.password);
+                this.props.loginRequest(this.state.user)
                
                 Keyboard.dismiss();
+                goToHomeScreen(this.state.email)
                
     
 
@@ -208,8 +215,8 @@ class Login extends ValidationComponent {
     render() {
 
 
-        console.log("render  login  " + this.props.componentId);
-
+    console.log('eeemmaal' +this.state.user.email);
+    
 
         const goToRegisterScreen = () => {
 
@@ -255,7 +262,13 @@ class Login extends ValidationComponent {
                         containerStyle={{ marginTop: 8 }}
                         autoCapitalize="none"
                         placeholder='Account'
-                        onChangeText={(email) => this.setState({ email })}
+                        onChangeText={(email) =>{ this.setState(prevState =>({
+                            user :{
+                                ...prevState.user ,
+                                email :email
+                            }
+
+                        }))}}
                         placeholderTextColor='#9899a2'
                         inputStyle={
                             { color: '#9899a2' }
@@ -280,7 +293,13 @@ class Login extends ValidationComponent {
 
                         placeholder='Password'
                         autoCapitalize="none"
-                        onChangeText={(password) => this.setState({ password })}
+                        onChangeText={(password) =>{ this.setState(prevState =>({
+                            user :{
+                                ...prevState.user ,
+                                password :password
+                            }
+
+                        }))}}
                         placeholderTextColor='#9899a2'
                         inputStyle={
                             { color: '#9899a2' }

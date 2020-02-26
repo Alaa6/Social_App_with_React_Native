@@ -29,60 +29,26 @@ export const saveUserInfo = (firstName,lastName,photoUri,address ,phone ,uid ,co
   saveUserData(dispatch ,firstName,lastName,photoUri,address ,phone ,uid ,country);
 }
 
-export const loginRequest = (email , password ,remeber, shouldLogin) => async (dispatch) => {
-  dispatch({ type: LOGIN_ATTEMPT });
-  console.log(  'i am ' +email + '&&'+ password)
+export const loginRequest = (user) => async (dispatch) => {
    
-   handleResponse(dispatch , email ,password)
+   dispatch({ type: LOGIN_ATTEMPT });
+  await auth().signInWithEmailAndPassword(
+    user.email ,
+    user.password
+    ).then(()=>{
+      onLoginSuccess(dispatch ,user);
+
+
+    }).catch((err)=>{
+      onLoginFailed(dispatch ,err);
+
+    })
+
+  // dispatch({ type: LOGIN_ATTEMPT });
+  // console.log(  'i am ' +email + '&&'+ password)
+   
+  //  handleResponse(dispatch , email ,password)
   
-
-
-
-   
-   
-
-
-  // axios.post(`${API_ENDPOINT}/signin`, values, {
-  //   headers: {
-  //     'Content-Type': 'application/json',
-  //     'Accept-Language': getLang()
-  //   },
-  // }).then(async response => {
-  //   dispatch({ type: LOGIN_SUCCESS, payload: response.data.user, token: response.data.token });
-  //   if (response.data.user.activated) {
-
-  //     if (remeber) {
-  //       await AsyncStorage.setItem("User", JSON.stringify(response.data.user));
-  //       await AsyncStorage.setItem("Token", JSON.stringify(response.data.token));
-  //     }
-  //     initFirebase(response.data.token);
-
-  //     Navigation.init('MAIN_STACK', {
-  //       rtl: store.getState().lang.rtl,
-  //       sideMenu: 'SideMenu',
-  //       name: 'Home',
-  //     });
-  //   } else {
-  //     showInfo(I18n.t('Not_Active'))
-
-  //   }
-
-  // }).catch((error) => {
-  //   console.log(error.response);
-  //   if (!error.response) {
-  //     showError(I18n.t('ui-networkConnectionError'));
-  //     dispatch({ type: LOGIN_FAILURE, error: I18n.t('ui-networkConnectionError') });
-  //     return;
-  //   }
-  //   if (error.response.data.errors) {
-  //     showError(error.response.data.errors);
-  //     dispatch({ type: LOGIN_FAILURE, error: error.response.data.errors });
-  //   }
-  //   else {
-  //     showError(I18n.t('ui-error-happened'));
-  //     dispatch({ type: LOGIN_FAILURE, error: I18n.t('ui-error-happened') });
-  //   }
-  // })
 };
 
 
@@ -99,15 +65,10 @@ const handleResponse =(dispatch ,email ,password ,fName ,lName,photoUri ,address
   }
   
 }
-const onLoginSuccess =(dispatch ,email ,password,fName ,lName,photoUri ,address)=>{
+const onLoginSuccess =(dispatch ,user)=>{
   dispatch ({
       type :LOGIN_SUCCESS ,
-      email : email ,
-      password :password,
-      fName :fName ,
-      lName:lName,
-      photoUri:photoUri,
-      address:address
+      user : user
 
   })
 
@@ -115,7 +76,7 @@ const onLoginSuccess =(dispatch ,email ,password,fName ,lName,photoUri ,address)
 
 const onLoginFailed =(dispatch ,errorMessage)=>{
   dispatch({
-      type :LOGIN_FAILED ,
+      type :LOGIN_FAILURE ,
       error :errorMessage
   })
 
@@ -138,6 +99,12 @@ const saveUserData =(dispatch ,fName ,lName,photoUri ,address ,phone ,uid ,count
 })
  
   
+}
+
+export const  logout = ()=>{
+  return dispatch =>{
+    //localStorage.removeItem('Token');
+  }
 }
 
 
@@ -289,27 +256,27 @@ export const registerRequest = (values) => async (dispatch) => {
   })
 }
 
-export const logout = () => async (dispatch, getState) => {
-  Navigation.init('MAIN_STACK', {
-    rtl: store.getState().lang.rtl,
-    // sideMenu: 'SideMenu',
-    name: 'Login',
-  });
-  try {
-    const deviceToken = await AsyncStorage.getItem('deviceToken');
-    await AsyncStorage.removeItem('deviceToken');
-    await AsyncStorage.removeItem('User');
-    await AsyncStorage.removeItem('Token');
-    axios.post(
-      `${API_ENDPOINT}/logout`, { token: deviceToken }, {
-      headers: {
-        'Authorization': "Bearer " + getState().auth.token,
-        'Content-Type': "application/json",
-        'Accept-Language': getLang()
-      }
-    },
-    );
-  } catch (error) { }
-  dispatch({ type: LOGOUT });
+// export const logout = () => async (dispatch, getState) => {
+//   Navigation.init('MAIN_STACK', {
+//     rtl: store.getState().lang.rtl,
+//     // sideMenu: 'SideMenu',
+//     name: 'Login',
+//   });
+//   try {
+//     const deviceToken = await AsyncStorage.getItem('deviceToken');
+//     await AsyncStorage.removeItem('deviceToken');
+//     await AsyncStorage.removeItem('User');
+//     await AsyncStorage.removeItem('Token');
+//     axios.post(
+//       `${API_ENDPOINT}/logout`, { token: deviceToken }, {
+//       headers: {
+//         'Authorization': "Bearer " + getState().auth.token,
+//         'Content-Type': "application/json",
+//         'Accept-Language': getLang()
+//       }
+//     },
+//     );
+//   } catch (error) { }
+//   dispatch({ type: LOGOUT });
 
-};
+// };
