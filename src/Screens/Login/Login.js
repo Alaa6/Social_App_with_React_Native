@@ -46,14 +46,70 @@ Navigation.registerComponent('Login', () => (props) => (
 
 
 
-function goToHomeScreen(email) {
+// async function login(email, password) {
 
-    // console.log("go to home screen" + componentId);
+//     try {
+//         await auth().signInWithEmailAndPassword(email, password);
+        
+//         goToHomeScreen(email)
+       
+      
 
 
-    Navigation.showModal({
+//     } catch (e) {
+//        // alert(e.message)
+//         Alert.alert(
+//             'Error',
+//             e.message,
+//             [
+//                 {
+//                     text: 'Ok',
+//                     onPress: () => {
+//                         Navigation.push('loginId', {
+//                             component: {
+//                                 id: 'loginId',
+//                                 name: 'Login',
+//                                 passProps: {
+                                   
+                                    
+//                                 }
+//                             }
+//                         });
+//                     },
+//                 },
+//             ],
+//             { cancelable: false }
+//         );
+//     }
+// }
 
-        sideMenu: {
+
+
+
+class Login extends Component {
+
+
+    constructor(props) {
+        super(props);
+        this.state = {
+     
+            user :{
+                email :'alaa' ,
+                password:'' ,
+            },
+           // email: '',
+           // password: '',
+            isLoading: false
+
+
+        }
+    }
+
+    goToHomeScreen =(email) =>{
+
+        Navigation.push('loginId' , {
+            
+            sideMenu: {
             // right:{
             //   component :{
             //     id : 'SideMenu' ,
@@ -89,67 +145,10 @@ function goToHomeScreen(email) {
             }
 
         } // end side menu 
-
+        
     })
-
 }
-
-async function login(email, password) {
-
-    try {
-        await auth().signInWithEmailAndPassword(email, password);
-        goToHomeScreen(email)
-       
-      
-
-
-    } catch (e) {
-       // alert(e.message)
-        Alert.alert(
-            'Error',
-            e.message,
-            [
-                {
-                    text: 'Ok',
-                    onPress: () => {
-                        Navigation.push('loginId', {
-                            component: {
-                                id: 'loginId',
-                                name: 'Login',
-                                passProps: {
-                                    
-                                }
-                            }
-                        });
-                    },
-                },
-            ],
-            { cancelable: false }
-        );
-    }
-}
-
-
-
-
-class Login extends ValidationComponent {
-
-
-    constructor(props) {
-        super(props);
-        this.state = {
-     
-            user :{
-                email :'alaa' ,
-                password:'' ,
-            },
-           // email: '',
-           // password: '',
-            isLoading: false
-
-
-        }
-    }
+    
 
 
 
@@ -163,9 +162,8 @@ class Login extends ValidationComponent {
                 this.setState({ isLoading: true })
                 //login(this.state.email, this.state.password);
                 this.props.loginRequest(this.state.user)
-               
                 Keyboard.dismiss();
-                goToHomeScreen(this.state.email)
+                this.goToHomeScreen(this.state.user.email)
                
     
 
@@ -186,30 +184,6 @@ class Login extends ValidationComponent {
     }
 
 
-
-    // EmailValidation(email) {
-    //     this.validate({
-    //         //name: { minlength: 3, maxlength: 7, required: true },
-    //         email: { email: true, required: true },
-    //         //number: { numbers: true },
-    //         //date: { date: 'YYYY-MM-DD' }
-    //     });
-
-    //     this.setState({ email });
-    // }
-
-    // PasswordValidation(password) {
-    //     this.validate({
-
-    //         ////name: { minlength: 3, maxlength: 7, required: true },
-    //         password: { minlength: 5, required: true },
-    //         //number: { numbers: true },
-    //         //date: { date: 'YYYY-MM-DD' }
-    //     });
-
-
-    //     this.setState({ password });
-    // }
 
 
     render() {
@@ -252,10 +226,6 @@ class Login extends ValidationComponent {
                     <Text style={styles.eStyle}>e</Text>
                 </View>
 
-                <Text style={{ color: 'red' }}>
-                    {this.getErrorMessages()}
-
-                </Text>
 
                 <View style={styles.InputView}>
                     <Input

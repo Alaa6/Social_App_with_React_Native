@@ -16,6 +16,7 @@ import Login from '../Screens/Login/Login'
 import Profile from '../Screens/Profile/profile'
 import Friends from '../Screens/Friends/Friends'
 import MyFriends from '../Screens/MyFriends/myFriends'
+import {logout} from '../actions/auth'
 
 const { width } = Dimensions.get('window');
 
@@ -69,6 +70,41 @@ class SideMenu extends Component {
 
     }
 
+    goToLogin = () => {
+        this.props.logout();
+
+        Navigation.push('homeId', {
+            component: {
+                id: 'loginId',
+                name: 'Login',
+                passProps: {
+        
+                },
+                options: {
+                 // topBar: { visible: false, drawBehind: true },
+                  sideMenu: {
+                    left: {
+                      visible: false,
+                      enabled: false
+                      }
+                  }
+                  
+                },
+              }
+
+        });
+
+        Navigation.mergeOptions('homeId', {
+            sideMenu: {
+                left: {
+                    visible: false,
+
+                },
+            },
+        });
+    }
+
+
 
 
 
@@ -79,29 +115,7 @@ class SideMenu extends Component {
     render() {
         const { photo } = this.state;
 
-        const goToLogin = () => {
-
-            Navigation.push('homeId', {
-                component: {
-                    id: 'loginId',
-                    name: 'Login',
-
-                }
-
-            });
-
-            Navigation.mergeOptions('homeId', {
-                sideMenu: {
-                    left: {
-                        visible: false,
-
-                    },
-                },
-            });
-        }
-
-
-
+        
         const goToAddPost = () => {
 
             Navigation.push('homeId', {
@@ -313,7 +327,7 @@ class SideMenu extends Component {
                             name='logout'
                             size={30}
                             color='green' />
-                        <Text style={styles.logoutText} onPress={goToLogin}>  {"Logout"} </Text>
+                        <Text style={styles.logoutText} onPress={this.goToLogin}>  {"Logout"} </Text>
                     </View>
 
                 </TouchableWithoutFeedback>
@@ -422,7 +436,7 @@ const mapStateToProps = state => ({
 })
 
 
-export default connect(mapStateToProps)(SideMenu);
+export default connect(mapStateToProps ,{logout})(SideMenu);
 
 
 

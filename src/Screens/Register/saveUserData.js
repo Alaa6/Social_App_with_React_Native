@@ -161,9 +161,10 @@ const Item = Picker.Item;
       }
      
       saveUserData = async (email, firstName, lastName, address, photo, phone, selectedCountry) => {
-        const uid = auth().currentUser.uid;
-    
-        const ref = database().ref(`/users/${uid}`);
+        const uid = await auth().currentUser.uid;
+        const idTokenResult = await auth().currentUser.getIdTokenResult();
+        const token =idTokenResult.token ;
+        const ref   = await database().ref(`/users/${uid}`);
     
         await ref.set({
           uid,
@@ -174,6 +175,7 @@ const Item = Picker.Item;
           photo,
           phone,
           selectedCountry,
+          token
     
     
         });

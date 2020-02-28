@@ -249,19 +249,7 @@ class AddItem extends Component {
 
 
 
-                    {/* <Input
-                        containerStyle={styles.textInputStyle}
-                        placeholder='Please enter item Video'
-                        onChangeText={(Item_Video) => this.setState({ Item_Video })}
-                        placeholderTextColor='white'
-                        inputStyle={
-                            { color: 'white' }
-                        }
-                        inputContainerStyle={
-                            { borderBottomWidth: 0 }
-                        }
-
-                        name='userName' /> */}
+            
                     <Input
                         containerStyle={styles.textAreaStyle}
                         placeholder='Enter post here ..'

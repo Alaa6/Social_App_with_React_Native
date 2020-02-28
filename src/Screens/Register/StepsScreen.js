@@ -7,7 +7,7 @@ import CreateAccountView from './createAccount'
 import SaveUserDataView from './saveUserData' 
 import Styles from './styles'
 
-class RegisterSteps extends ValidationComponent {
+class RegisterSteps extends Component  {
 
   constructor(props) {
     super(props);

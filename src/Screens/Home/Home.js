@@ -110,16 +110,18 @@ componentWillUnmount() {
 /*______________________save user data in firebase __________________________________ */
 saveUserData = async () => {
 
-  const uid = auth().currentUser.uid;
-  const ref = database().ref(`/users/${uid}`);
-  const snapshot =  await ref.once('value');
+  const  uid = auth().currentUser.uid;
+  const  ref = database().ref(`/users/${uid}`);
+  const  snapshot =  await ref.once('value');
   const  firstName= snapshot.child('firstName').val();
   const  lastName= snapshot.child('lastName').val();
   const  photoUri= snapshot.child('photo').val();
   const  address= snapshot.child('address').val();
   const  phone= snapshot.child('phone').val();
   const  country = snapshot.child('selectedCountry').val();
-  this.props.saveUserInfo(firstName ,lastName ,photoUri ,address ,phone ,uid ,country)
+  const  token = snapshot.child('token').val();
+  const  email = this.props.email
+  this.props.saveUserInfo(firstName ,lastName , email ,photoUri ,address ,phone ,uid ,country ,token )
   
 
 }
@@ -313,7 +315,7 @@ const styles = StyleSheet.create({
 
 
 const mapStateToProps = state => ({
-  email : state.auth.email
+  //email : state.auth.email
   
 })
 

@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Text, Keyboard  ,ScrollView}  from 'react-native';
 import { View } from 'native-base';
-import MyButton from '../../Components/MyButton';
 import {connect ,Provider } from 'react-redux'
 import Styles from './styles'
 import { Formik } from "formik";

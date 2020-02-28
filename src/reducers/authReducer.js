@@ -40,8 +40,8 @@ export default (state = INITIAL_STATE, action) => {
         case GET_USER_DATA:
             return {
                 ...state, processing: false, success: true,
-                fName: action.fName, lName: action.lName, photoUri: action.photoUri,
-                address: action.address, phone: action.phone ,uid:action.uid ,country:action.country , error: ''
+                fName: action.fName, lName: action.lName ,email: action.email, photoUri: action.photoUri,
+                address: action.address, phone: action.phone ,uid:action.uid ,country:action.country , error: '' ,token :action.token
             };
         case UPDATE_INFO:
             return { ...state, processing: false, user: action.payload };
