@@ -14,7 +14,7 @@ class RegisterSteps extends ValidationComponent {
     this.state = {
      
       nextBtn: false,
-      showCreateBtn: true,
+     // showCreateBtn: true,
     
     }
   }
@@ -22,7 +22,15 @@ class RegisterSteps extends ValidationComponent {
 
 
 
+ changeState =()=>{
 
+    this.setState({
+      nextBtn : true ,
+      
+    })
+
+   
+ }
 
 
   
@@ -37,10 +45,10 @@ class RegisterSteps extends ValidationComponent {
 
         <ProgressSteps labelColor="#9899a2" activeLabelColor="#3b3c4e" activeStepNumColor="#3b3c4e" completedStepIconColor="#3b3c4e" activeStepIconBorderColor="#3b3c4e" completedProgressBarColor="#3b3c4e">
           <ProgressStep label="Register" nextBtnStyle={Styles.btnStyle} nextBtnText={this.state.nextBtn ? 'Next' : null} nextBtnTextStyle={{ color: '#3b3c4e' }} >
-               <CreateAccountView/>
+               <CreateAccountView  changeState={this.changeState}/>
           </ProgressStep>
-          <ProgressStep label="User Information" nextBtnStyle={Styles.btnStyle2} nextBtnText='Next' nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText='السابق' previousBtnStyle={Styles.btnStyle1} previousBtnTextStyle={{ color: '#3b3c4e' }} onSubmit={this.saveData}>
-              <SaveUserDataView/>
+          <ProgressStep label="User Information" nextBtnStyle={Styles.btnStyle2} nextBtnText='Next'  nextBtnTextStyle={{ color: '#3b3c4e' }} previousBtnText={null} finishBtnText={null}>
+              <SaveUserDataView />
           </ProgressStep>
 
         </ProgressSteps>

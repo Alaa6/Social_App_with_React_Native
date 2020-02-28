@@ -57,6 +57,12 @@ const styles = {
     alignSelf: 'center',
     borderRadius: 100,
     resizeMode: 'contain'
+  } ,
+  submitStyle :{
+    textAlign:'right' ,
+   fontSize:20 ,
+   marginRight :20 ,
+   marginTop :7
   }
 
 

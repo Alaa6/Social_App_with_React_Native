@@ -7,7 +7,7 @@ import {connect ,Provider } from 'react-redux'
 import Styles from './styles'
 import { Formik } from "formik";
 import ValidationSchema from './validation'
-import { Input } from 'react-native-elements';
+import { Input ,Button } from 'react-native-elements';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import auth from '@react-native-firebase/auth';
 
@@ -27,11 +27,17 @@ const Form = withNextInputAutoFocusForm(View);
         super(props);
         this.state = {
           email: '',
-          nextBtn: false,
+          loading: false,
           showCreateBtn: true,
        
         }
       }
+
+      changeLoading =()=>{
+        this.setState ({
+          loading :true
+        })
+      }  
 
        /* ___________________register user in firebase _________________________ */
 
@@ -39,21 +45,23 @@ const Form = withNextInputAutoFocusForm(View);
 
 
     try {
+      this.changeLoading()
       await auth().createUserWithEmailAndPassword(values.email, values.password);
-      this.setState({ nextBtn: true, showCreateBtn: false, email: values.email })
+      this.setState({ showCreateBtn: false, email: values.email ,loading :false })
+      this.props.changeState();
       Keyboard.dismiss();
     } catch (e) {
-      await alert(e.message)
       this.setState({
         showCreateBtn: true,
-        nextBtn: false,
+        loading :false
       })
-
+      await alert(e.message)
+     
     }
   }
 
 
-    
+
     
 
   render() {
@@ -162,8 +170,7 @@ const Form = withNextInputAutoFocusForm(View);
         
         
         
-                  {showCreateBtn && <MyButton title="Greate a new account" customClick={props.handleSubmit} backgroundColor='#3b3c4e' ></MyButton>}
-        
+                  {showCreateBtn && <Button title="Greate a new account" onPress={props.handleSubmit} buttonStyle ={{ backgroundColor :'#3b3c4e'}} loading={this.state.loading} />}
         
                 </Form>
               );

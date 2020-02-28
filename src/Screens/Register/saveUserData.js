@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { Text, Keyboard  ,ScrollView ,TouchableOpacity}  from 'react-native';
+import { Text, Keyboard  ,ScrollView ,TouchableOpacity ,Image ,ToastAndroid}  from 'react-native';
 import { View ,Picker} from 'native-base';
 import MyButton from '../../Components/MyButton';
 import {connect ,Provider } from 'react-redux'
@@ -14,12 +14,10 @@ import auth from '@react-native-firebase/auth';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ant from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
-
 import ImagePickerCrop from 'react-native-image-crop-picker';
 import ImagePicker from 'react-native-image-picker';
-
 import {GoToLoginScreen} from './Navigation'
+import database from '@react-native-firebase/database';
 
 
 const Item = Picker.Item;
@@ -363,6 +361,12 @@ const Item = Picker.Item;
 
             </Picker>
           </View>
+          <TouchableOpacity onPress={this.saveData}>
+          <Text style={Styles.submitStyle} >{'Submit'}</Text>
+
+
+          </TouchableOpacity>
+
 
 
         </ScrollView>
