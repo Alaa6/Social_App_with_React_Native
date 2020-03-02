@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, StyleSheet, Dimensions, Keyboard, ActivityIndicator ,Alert } from 'react-native';
+import { Text, StyleSheet, Dimensions, Keyboard, ActivityIndicator ,Alert ,AsyncStorage,} from 'react-native';
 import { View } from 'native-base';
 import MyButton from '../../Components/MyButton'
 import { Input } from 'react-native-elements';
@@ -105,6 +105,31 @@ class Login extends Component {
         }
     }
 
+    componentDidMount = () => {
+        // AsyncStorage.getItem('email').then((value) =>
+        // this.setState({ email: value }))
+
+        AsyncStorage.setItem('email', 'alaa');
+        AsyncStorage.getItem('email').then((value)=>{
+           console.log('2' +value);
+           
+       })
+       AsyncStorage.removeItem('email')
+       AsyncStorage.getItem('email').then((value)=>{
+        console.log('1' +value);
+        
+    })
+
+        
+
+    }
+
+    setEmail = (value) => {
+        AsyncStorage.setItem('email', this.state.email);
+        this.setState({ email : value });
+    }
+   
+
     goToHomeScreen =(email) =>{
 
         Navigation.push('loginId' , {
@@ -124,7 +149,9 @@ class Login extends Component {
                             name: 'Home',
                             passProps: {
                                 email: email,
-                                componentId: 'SideMenu'
+                                componentId: 'SideMenu' ,
+                                testAsynch :AsyncStorage.getItem('email')
+
                             }
                         }
 
@@ -158,11 +185,13 @@ class Login extends Component {
 
         if (this.state.user.email) {
             if (this.state.user.password) {
+               
 
                 this.setState({ isLoading: true })
                 //login(this.state.email, this.state.password);
                 this.props.loginRequest(this.state.user)
                 Keyboard.dismiss();
+               // this.setEmail(this.state.user.email)
                 this.goToHomeScreen(this.state.user.email)
                
     
@@ -189,7 +218,7 @@ class Login extends Component {
     render() {
 
 
-    console.log('eeemmaal' +this.state.user.email);
+  //  console.log('eeemmaal' +this.state.user.email);
     
 
         const goToRegisterScreen = () => {
@@ -199,6 +228,7 @@ class Login extends Component {
                     id: 'registerStepsId',
                     name: 'RegisterSteps',
                     passProps: {
+
 
                     }  ,
 

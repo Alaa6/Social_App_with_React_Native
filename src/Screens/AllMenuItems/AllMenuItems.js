@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Text, View, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { FlatList, Text, View, Image, StyleSheet, TouchableOpacity, Alert, Dimensions } from 'react-native';
 import Realm from 'realm';
 import Swipeout from 'react-native-swipeout';
 import UpdateItem from '../Item/UpdateItem'
@@ -14,6 +14,8 @@ import auth from '@react-native-firebase/auth';
 
 let realm;
 const uid = auth().currentUser.uid;
+
+const {width} = Dimensions.get('window')
 
 
 
@@ -207,7 +209,7 @@ class ViewAllMenuItem extends React.Component {
                                         </View>
                                     </View>
                                     <Text style={{ fontSize: 18, margin: 10 }} numberOfLines={2}>{item.item_description}</Text>
-                                    <Image source={{ uri: item.item_Image }} style={{ width: 300, height: 300, alignSelf: 'center', marginTop: 5 , marginBottom :5 }} />
+                                    <Image source={{ uri: item.item_Image }} style={{ width: width/1.2, height: 300, alignSelf: 'center', marginTop: 5 , marginBottom :5 , }} />
 
                                 </View>
 

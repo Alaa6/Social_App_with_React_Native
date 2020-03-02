@@ -17,6 +17,7 @@ import Profile from '../Screens/Profile/profile'
 import Friends from '../Screens/Friends/Friends'
 import MyFriends from '../Screens/MyFriends/myFriends'
 import {logout} from '../actions/auth'
+import Gelocation from '../Screens/Geolocation/geolocation'
 
 const { width } = Dimensions.get('window');
 
@@ -53,6 +54,13 @@ Navigation.registerComponent('MyFriends', () => (props) => (
         <MyFriends {...props} />
     </Provider>
 ), () => MyFriends);
+
+Navigation.registerComponent('Gelocation', () => (props) => (
+    <Provider store={store}>
+        <Gelocation {...props} />
+    </Provider>
+), () => Gelocation);
+
 
 
 
@@ -105,6 +113,29 @@ class SideMenu extends Component {
     }
 
 
+
+    goToGelocation = () => {
+
+        Navigation.push('homeId', {
+            component: {
+                id: 'gelocationId',
+                name: 'Gelocation',
+                passProps: {
+                    title: 'Gelocation'
+                }
+            }
+        });
+
+        Navigation.mergeOptions('homeId', {
+            sideMenu: {
+                left: {
+                    visible: false,
+
+                },
+            },
+        });
+
+    }
 
 
 
@@ -318,6 +349,20 @@ class SideMenu extends Component {
                     <Text style={styles.ItemsText} onPress={goToAddPost} >{"Add Post"}</Text>
 
                 </View>
+
+                <TouchableOpacity onPress={this.goToGelocation}>
+                    <View style={styles.MenuItems} >
+
+                        <FontAwesome5
+                            style={styles.Icons}
+                            name='users'
+                            size={25}
+                            color='#3b3c4e' />
+                        <Text style={styles.ItemsText} >{"My Location"}</Text>
+
+                    </View>
+
+                </TouchableOpacity>
 
 
                 <TouchableWithoutFeedback >

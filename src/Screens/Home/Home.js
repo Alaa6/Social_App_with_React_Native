@@ -215,6 +215,7 @@ goToAddItem =()=> {
        {/* <Notifications/> */}
          {Lifecycle}
        <View style ={{width :width , height :width*1.75 , justifyContent:'flex-end'}}>
+        
      
        <MenuProvider>
 
